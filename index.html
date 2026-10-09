@@ -109,6 +109,13 @@ button.nm{cursor:pointer}
 .bc{display:block;width:100%;height:34px;margin:18px 0 6px}
 .fine{font-size:11.5px;color:#52616d;text-align:center}
 .acts{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 10px;max-width:480px}
+.choose-tip{max-width:480px;margin:0 0 14px;padding:11px 13px;border:2px solid var(--stamp);border-radius:8px;background:#fff7f5;color:#7e2027;font-size:14px;line-height:1.35}
+.choose-tip strong{display:block;font-size:15px}
+.extra{max-width:480px;margin:10px 0 0;border-top:1px solid var(--rule);padding-top:9px}
+.extra summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--steel)}
+.extra .extra-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.extra p{font-size:13px;color:var(--mut);margin:7px 0 0}
+.print-story{display:none}
 .legend{font-size:13.5px;color:var(--mut);max-width:48ch;margin:6px 0 0}
 .sw{display:inline-block;width:26px;height:10px;background:var(--mark);margin-right:6px;vertical-align:middle}
 
@@ -192,8 +199,13 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
   .slot{padding:62px 16px 22px}
 }
 @media print{
-  .top,.acts,.legend,.slot,.acts2,.noprint,#tabs{display:none!important}
+  .top,.intro,.acts,.legend,.slot,.acts2,.noprint,#tabs,.res>div:nth-child(2),.sec,.foot{display:none!important}
   body{background:#fff}
+  .res{display:block;padding:0}
+  .print-story{display:block;max-width:480px;margin:0 0 18px;padding:16px 18px;border:2px solid var(--stamp);border-radius:8px;font-size:12.5px;line-height:1.45;break-inside:avoid}
+  .print-story h2{font:800 18px/1.15 var(--sans);margin:0 0 8px;color:var(--stamp)}
+  .print-story p{margin:0 0 8px}
+  .print-story p:last-child{margin-bottom:0}
   .bon{box-shadow:none;transform:none}
   .bon .bl{opacity:1!important;animation:none!important}
 }
@@ -264,13 +276,27 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
   <div id="out" class="hide">
     <section class="res" id="bon">
       <div>
+        <div class="choose-tip noprint"><strong>Vink aan en zie je mogelijke besparing per jaar.</strong>Kies op de jaarbon de kosten die je wilt stoppen of aanpassen. MijnGeld.app telt de jaarbedragen direct voor je op.</div>
+        <aside class="print-story" aria-label="Waarom MijnGeld.app bestaat">
+          <h2>Waarom ik MijnGeld.app maakte</h2>
+          <p>Ik vroeg me af: waar blijft mijn geld? Het zat niet alleen in grote uitgaven, maar juist in kleine bedragen die bleven doorlopen. Apps die ik dat jaar niet had gebruikt. Een kortingskaart van 70 euro die al twee jaar niets opleverde, omdat mijn pasje kwijt was en de korting niet werkte wanneer ik met mijn telefoon incheckte. Los lijken zulke afschrijvingen onbenullig; samen kunnen ze een flinke jaarlijkse kostenpost worden.</p>
+          <p>Ik probeerde door de jaren heen verschillende functies en bankierapps om overzicht te krijgen. Zodra daar na een paar maanden weer een abonnement van enkele euro's per maand voor nodig was, haakte ik af. Dit moest eenvoudiger kunnen.</p>
+          <p>MijnGeld.app verwerkt je afschriften bewust lokaal op je laptop of telefoon en is na installatie op de meeste apparaten ook offline te gebruiken. Ik zie, verzamel en verhandel je bankgegevens niet. De MijnGeld.app – Jaarbon koop je één keer; volgende maand, volgend jaar of later kun je hem opnieuw openen met nieuwe afschriften om nieuwe inzichten en mogelijke besparingen te vinden.</p>
+        </aside>
         <div id="bonbox"></div>
         <div class="acts noprint" id="acts">
-          <button class="btn mark" id="share">Deel je MijnGeld.app-bon</button>
-          <button class="btn ghost" id="ics">Herinneringen in je agenda</button>
-          <button class="btn ghost" id="exp">Download als CSV</button>
+          <button class="btn mark" id="share">Deel je jaarbon</button>
           <button class="btn ghost" id="print">Afdrukken</button>
         </div>
+        <details class="extra noprint">
+          <summary>Extra: agenda en CSV</summary>
+          <div class="extra-actions">
+            <button class="btn ghost" id="ics">Zet betaalmomenten in je agenda</button>
+            <button class="btn ghost" id="exp">Exporteer je vaste lasten als CSV</button>
+          </div>
+          <p><b>Agenda:</b> zet de volgende verwachte betaling van niet-maandelijkse vaste lasten in je agenda. Aangevinkte maandlasten krijgen ook een opzegherinnering. Je agenda waarschuwt 14 dagen vooraf.</p>
+          <p><b>CSV:</b> bewaart je lijst met terugkerende kosten, jaarbedragen en vinkjes. Alleen nuttig als je zelf verder wilt rekenen in bijvoorbeeld Excel of Numbers.</p>
+        </details>
         <p class="legend noprint"><span class="sw"></span>Geel gemarkeerd is opvallend. Vink een regel aan om hem weg te strepen, tik op de naam voor categorie en opzegbrief.</p>
       </div>
       <div>
@@ -882,7 +908,7 @@ async function saveBlob(blob,name,type){
 }
 function openShare(withNames){
   const c=shareCanvas(withNames);
-  $('mbox').innerHTML='<div class="rowx"><h2>Deel je MijnGeld.app-bon</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">De mogelijke besparing is het opgetelde jaarbedrag van de kosten die je zelf hebt aangevinkt. Standaard staan er alleen categorieen op, geen namen van partijen en geen bankgegevens.</p><label class="chk"><input type="checkbox" id="swn"'+(withNames?' checked':'')+'> Toon namen van partijen</label><img alt="Deelbare MijnGeld.app-bon" src="'+c.toDataURL('image/png')+'"><div><button class="btn mark" id="mdl">Bewaar of deel afbeelding</button></div><p class="note">Lukt dat niet? Houd de afbeelding hierboven ingedrukt en kies bewaren.</p>';
+  $('mbox').innerHTML='<div class="rowx"><h2>Deel je jaarbon</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">De mogelijke besparing is het opgetelde jaarbedrag van de kosten die je zelf hebt aangevinkt. Standaard staan er alleen categorieen op, geen namen van partijen en geen bankgegevens.</p><label class="chk"><input type="checkbox" id="swn"'+(withNames?' checked':'')+'> Toon namen van partijen</label><img alt="Deelbare jaarbon van MijnGeld.app" src="'+c.toDataURL('image/png')+'"><div><button class="btn mark" id="mdl">Bewaar of deel afbeelding</button></div><p class="note">Lukt dat niet? Houd de afbeelding hierboven ingedrukt en kies bewaren.</p>';
   $('modal').classList.add('on');
   $('mdl').onclick=()=>c.toBlob(b=>saveBlob(b,'mijngeld-app-mijn-overzicht.png','image/png'));
 }
@@ -905,7 +931,7 @@ $('demo').addEventListener('click',()=>{RAW=[{name:'voorbeeld-ing.csv',text:demo
 $('reset').addEventListener('click',()=>{RAW=[];SEEN=new Set();OV={};CANCEL=new Set();ALL=[];$('files').innerHTML='';hideOut();window.scrollTo(0,0);});
 $('ics').addEventListener('click',()=>{const t=makeICS(A.rec,TODAY(),CANCEL);saveBlob(new Blob([t],{type:'text/calendar;charset=utf-8'}),'herinneringen-vaste-lasten.ics','text/calendar');});
 $('exp').addEventListener('click',exportCSV);
-$('print').addEventListener('click',()=>{const w=SHOWALL;if(!w){SHOWALL=true;FIRST=false;drawBon();}try{window.print();}catch(e){}if(!w){SHOWALL=false;drawBon();}toast('Afdrukken opent niet? Dan blokkeert dit venster dat. Open het bestand in Safari of Chrome, of kies Download als CSV.');});
+$('print').addEventListener('click',()=>{const w=SHOWALL;if(!w){SHOWALL=true;FIRST=false;drawBon();}try{window.print();}catch(e){}if(!w){SHOWALL=false;drawBon();}toast('Afdrukken opent niet? Dan blokkeert dit venster dat. Open de pagina in Safari of Chrome en probeer opnieuw.');});
 $('share').addEventListener('click',()=>openShare(false));
 $('bonbox').addEventListener('click',e=>{
   if(e.target.id==='bonmore'){SHOWALL=!SHOWALL;FIRST=false;drawBon();return;}
