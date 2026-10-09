@@ -81,7 +81,6 @@ body.has-data .slot span.t{font-size:14px}
 .bon::after{content:"";position:absolute;left:0;right:0;top:100%;height:9px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M0 0h14L7 9z' fill='%23FFFEFA'/%3E%3C/svg%3E") repeat-x}
 .bon h2{font:800 24px var(--mono);margin:0;letter-spacing:-.02em}
 .bon .meta{color:#52616d;font-size:12.5px;margin:2px 0 0}
-.bon .nr{color:#52616d;font-size:11.5px;letter-spacing:.04em}
 .bon .stamp{position:absolute;right:20px;top:24px;transform:rotate(7deg);border:3px solid #c0392b;color:#c0392b;font:800 15px var(--mono);letter-spacing:.08em;padding:3px 10px;border-radius:4px;opacity:.78;pointer-events:none}
 .bon .more{display:block;width:100%;margin:6px 0 0;padding:9px;border:1.5px dashed #aab3ba;background:none;font:600 13px var(--mono);color:#1b2a35;cursor:pointer;border-radius:4px}
 .bon .more:hover{background:#f3f0e6}
@@ -270,13 +269,14 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
     <h2>Veelgestelde vragen</h2>
     <details><summary>Wat gebeurt er met mijn bankgegevens?</summary><p>MijnGeld.app leest ze lokaal. De app verstuurt je bankbestanden, bedragen en berekeningen niet naar ons en bewaart ze niet op een server. Je browser en besturingssysteem kunnen buiten MijnGeld.app om wel technische gegevens verwerken.</p></details>
     <details><summary>Welke bestanden werken?</summary><p>CSV en MT940 van Nederlandse banken. Je mag meerdere bestanden en meerdere rekeningen tegelijk selecteren. Overboekingen tussen je eigen rekeningen worden herkend en tellen niet mee.</p></details>
+    <details><summary>Waarom mis ik een abonnement of app?</summary><p>MijnGeld.app kan alleen afschrijvingen herkennen die letterlijk in de gekozen bestanden staan. Kosten van een niet-toegevoegde rekening ontbreken. Een creditcard staat op je betaalrekening vaak alleen als één totaalbedrag; voeg daarom, als je kaartuitgever dit aanbiedt, ook de afzonderlijke CSV- of MT940-export van je creditcard toe.</p></details>
     <details><summary>Is dit financieel advies?</summary><p>Nee. Het zijn signalen uit je eigen afschriften. Jij beslist wat je opzegt of aanpast.</p></details>
   </section>
 
   <div id="out" class="hide">
     <section class="res" id="bon">
       <div>
-        <div class="choose-tip noprint"><strong>Vink aan en zie je mogelijke besparing per jaar.</strong>Kies op de jaarbon de kosten die je wilt stoppen of aanpassen. MijnGeld.app telt de jaarbedragen direct voor je op.</div>
+        <div class="choose-tip noprint"><strong>Vink aan en zie je mogelijke besparing per jaar.</strong></div>
         <aside class="print-story" aria-label="Waarom MijnGeld.app bestaat">
           <h2>Waarom ik MijnGeld.app maakte</h2>
           <p>Ik vroeg me af: waar blijft mijn geld? Het zat niet alleen in grote uitgaven, maar juist in kleine bedragen die bleven doorlopen. Apps die ik dat jaar niet had gebruikt. Een kortingskaart van 70 euro die al twee jaar niets opleverde, omdat mijn pasje kwijt was en de korting niet werkte wanneer ik met mijn telefoon incheckte. Los lijken zulke afschrijvingen onbenullig; samen kunnen ze een flinke jaarlijkse kostenpost worden.</p>
@@ -297,7 +297,7 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
           <p><b>Agenda:</b> zet de volgende verwachte betaling van niet-maandelijkse vaste lasten in je agenda. Aangevinkte maandlasten krijgen ook een opzegherinnering. Je agenda waarschuwt 14 dagen vooraf.</p>
           <p><b>CSV:</b> bewaart je lijst met terugkerende kosten, jaarbedragen en vinkjes. Alleen nuttig als je zelf verder wilt rekenen in bijvoorbeeld Excel of Numbers.</p>
         </details>
-        <p class="legend noprint"><span class="sw"></span>Geel gemarkeerd is opvallend. Vink een regel aan om hem weg te strepen, tik op de naam voor categorie en opzegbrief.</p>
+        <p class="legend noprint"><span class="sw"></span>Geel is een signaal: een mogelijke prijsstijging of een van meerdere streamingdiensten. Vink een regel aan om je mogelijke besparing te berekenen; tik op de naam voor categorie en opzegbrief.</p>
       </div>
       <div>
         <p class="lead" id="lead"></p>
@@ -334,7 +334,7 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
 //==LOGIC==
 const RULES=[
 ['Tikkie & onderling',/tikkie|betaalverzoek|bunq\.me|paypal\.me/],
-['Abonnementen',/netflix|spotify|disney ?plus|disney\+|videoland|hbo|\bmax\b|prime video|amazon prime|youtube|apple\.com\/bill|itunes|icloud|google (one|play|storage|\*)|microsoft|adobe|dropbox|openai|chatgpt|anthropic|claude\.ai|notion|canva|nordvpn|nlziet|storytel|audible|dazn|viaplay|strava|linkedin|patreon|skyshowtime|npo plus|kindle|deezer|tidal|1password|lastpass|github|netlify|shopify|squarespace|wix\.com|godaddy|transip|hostnet|mailchimp|zoom\.us|slack|figma|midjourney|krant|volkskrant|nrc|telegraaf|de correspondent|libelle|abonnement/],
+['Abonnementen',/netflix|spotify|disney ?plus|disney\+|videoland|hbo|\bmax\b|prime video|amazon prime|youtube|apple\.com\/bill|itunes|icloud|google (one|play|storage|\*)|microsoft|adobe|dropbox|openai|chatgpt|anthropic|claude\.ai|notion|canva|nordvpn|nlziet|storytel|audible|dazn|viaplay|strava|linkedin|patreon|skyshowtime|npo plus|kindle|deezer|tidal|1password|lastpass|github|netlify|shopify|squarespace|wix\.com|godaddy|transip|hostnet|mailchimp|zoom\.us|slack|figma|midjourney|meditation moments|bike ?explorer|columbus|magazine|tijdschrift|krant|volkskrant|nrc|telegraaf|de correspondent|libelle|abonnement/],
 ['Telefoon & internet',/\bkpn\b|vodafone|ziggo|t-mobile|odido|simyo|tele2|lebara|hollandsnieuwe|youfone|caiway|xs4all|budget thuis|simpel|\bben\b mobiel|telfort|delta fiber|glasvezel|internet/],
 ['Energie & water',/vattenfall|eneco|essent|greenchoice|engie|oxxio|budget energie|vitens|brabant water|waterbedrijf|pzem|energiedirect|frank energie|tibber|zonneplan|evides|dunea|waternet|ennatuurlijk|energie|jaarafrekening|eindafrekening|gas en licht/],
 ['Verzekeringen',/verzeker|centraal beheer|achmea|interpolis|nationale.nederlanden|\bnn (schade|leven)|\basr\b|a\.s\.r|ohra|fbto|unive|univé|\bvgz\b|\bcz\b|menzis|zilveren kruis|ditzo|\bono\b|\bdsw\b|anderzorg|aegon|allianz|reaal|ing verzekeren|zorgpremie|premie/],
@@ -678,6 +678,7 @@ const dlabel=d=>d.toLocaleDateString('nl-NL',{day:'numeric',month:'short',year:'
 const dshort=d=>d.toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
 const ALLCATS=RULES.map(r=>r[0]).concat(['Overig']);
 const CONFIG={SHARE_URL:''};
+const CREDITCARD_RE=/\bcreditcard\b|\bicsc\b|american express|international card services|\bics\b/i;
 const TODAY=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());};
 
 let ALL=[],OV={},CANCEL=new Set(),A=null,INS=[],SEEN=new Set(),RAW=[],FIRST=true;
@@ -696,7 +697,7 @@ function bonHTML(o){
     (o.interactive?'<button class="nm" data-key="'+esc(r.key)+'"><span>'+esc(r.name)+'</span></button>':'<div class="nm"><span>'+esc(r.name)+'</span></div>')+
     '<span class="am">'+r.amount+'</span><div class="sub">'+esc(r.sub)+'</div>'+
     (o.interactive?'<div class="det hide">'+r.det+'</div>':'')+'</div>').join('');
-  return '<div class="bon'+(o.interactive?'':' ro')+(o.tilt?' tilt':'')+(o.anim?'':' still')+'"><h2>'+esc(o.head)+'</h2><div class="meta">'+esc(o.meta)+'</div>'+(o.nr?'<div class="nr">Bonnummer '+esc(o.nr)+'</div>':'')+'<div class="sep"></div>'+
+  return '<div class="bon'+(o.interactive?'':' ro')+(o.tilt?' tilt':'')+(o.anim?'':' still')+'"><h2>'+esc(o.head)+'</h2><div class="meta">'+esc(o.meta)+'</div><div class="sep"></div>'+                                                                                                                                
     (rows||'<div class="sub">Geen terugkerende kosten herkend. Upload afschriften van 12 maanden voor het beste resultaat.</div>')+
     '<div class="sep"></div>'+o.foot+(o.stamp?'<div class="stamp" aria-hidden="true">BEWAAR</div>':'')+'</div>';
 }
@@ -751,7 +752,7 @@ function drawBon(){
   INS.forEach(i=>{if(i.type==='prijs')marks.add(i.name);if(i.type==='stream')i.names.forEach(n=>marks.add(n));});
   const tot=sumPY(()=>true);
   const lim=(SHOWALL||A.rec.length<=BONMAX)?A.rec.length:BONMAX,last=A.yms[A.yms.length-1];
-  $('bonbox').innerHTML=bonHTML({head:'Jaarbon',meta:mlabel(A.yms[0])+' tot '+mlabel(last)+', '+A.rec.length+' regels',nr:'JB-'+last,stamp:true,anim:FIRST,interactive:true,
+  $('bonbox').innerHTML=bonHTML({head:'Jaarbon',meta:mlabel(A.yms[0])+' tot '+mlabel(last)+', '+A.rec.length+' regels',stamp:true,anim:FIRST,interactive:true,
     rows:A.rec.slice(0,lim).map(r=>({key:r.key,name:r.name,sub:r.freq+', '+eur.format(r.perTime)+'. Volgende: '+nextLabel(r),amount:eur.format(r.perYear),mark:marks.has(r.name),off:CANCEL.has(r.key),det:detHTML(r)})),
     foot:'<div class="tl big"><span>Totaal per jaar</span><b id="tTot">'+eur.format(tot)+'</b></div><div class="tl sav hide" id="tSav"><span>Mogelijke besparing per jaar</span><b id="tSavV"></b></div><div class="tl hide" id="tNet"><span>Na mijn keuzes</span><b id="tNetV"></b></div>'+(A.rec.length>BONMAX?'<button class="more" id="bonmore">'+(SHOWALL?'Toon alleen de grootste '+BONMAX:'Toon alle '+A.rec.length+' vaste lasten')+'</button>':'')+barcode()+'<div class="fine">Lokaal berekend met MijnGeld.app. Er is niets verstuurd.</div>'});
   updBon();
@@ -769,6 +770,7 @@ function drawLead(){
 }
 function drawIns(){
   const rows=[];
+  if(A.use.some(t=>t.amount<0&&CREDITCARD_RE.test((t.name||'')+' '+(t.desc||''))))rows.push(['info','<b>Creditcardafschrijving gevonden.</b> Op je betaalrekening staat vaak alleen het totaalbedrag. Onderliggende apps en abonnementen worden pas zichtbaar als je ook een afzonderlijke CSV- of MT940-export van je creditcard toevoegt.']);
   INS.filter(i=>i.type==='prijs').sort((a,b)=>b.perYear-a.perYear).slice(0,4).forEach(i=>rows.push(['warn','<b>'+esc(i.name)+'</b> is duurder geworden: van '+eur.format(i.from)+' naar '+eur.format(i.to)+'. Dat is '+eur.format(i.perYear)+' extra per jaar.']));
   INS.filter(i=>i.type==='stream').forEach(i=>rows.push(['warn','Je betaalt voor <b>'+i.n+' streamingdiensten</b> ('+i.names.map(esc).join(', ')+'), samen '+eur0.format(i.perYear)+' per jaar. Gebruik je ze alle '+i.n+' echt?']));
   INS.filter(i=>i.type==='dubbel').slice(0,3).forEach(i=>rows.push(['warn','Mogelijk <b>dubbel afgeschreven</b>: '+esc(i.name)+', '+eur.format(i.amount)+' op '+dlabel(i.date)+' ('+i.n+' keer). Controleer dit bij de partij.']));
@@ -851,7 +853,7 @@ function shareCanvas(withNames){
   else{const g={};A.rec.forEach(r=>{g[r.cat]=(g[r.cat]||0)+r.perYear;});Object.keys(g).sort((a,b)=>g[b]-g[a]).slice(0,9).forEach(c=>rows.push([c,g[c]]));}
   const {total:tot,saving:sav,remaining,selectedCount}=shareSummary();
   const W=1080,top=90,px=150,pw=780,rowH=56;
-  const ph=200+rows.length*rowH+50+150+(sav>0?210:0)+110+60,H=top+ph+230;
+  const ph=265+rows.length*rowH+50+150+(sav>0?210:0)+110+60,H=top+ph+230;
   const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   x.fillStyle='#E4E8EC';x.fillRect(0,0,W,H);
   x.save();x.shadowColor='rgba(20,35,47,.30)';x.shadowBlur=44;x.shadowOffsetY=20;
@@ -859,13 +861,13 @@ function shareCanvas(withNames){
   for(let xx=px+pw;xx>px;xx-=28){x.lineTo(xx-14,top+ph+16);x.lineTo(xx-28,top+ph);}
   x.closePath();x.fill();x.restore();
   const M='ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',ix=px+50,ex=px+pw-50;
-  const title=sav>0?'MijnGeld.app - mogelijke besparing':'MijnGeld.app - mijn jaaroverzicht';
-  let titleSize=46;x.fillStyle='#1b2a35';
-  do{x.font='800 '+titleSize+'px '+M;titleSize-=2;}while(x.measureText(title).width>ex-ix&&titleSize>28);
-  x.fillText(title,ix,top+80);
-  x.fillStyle='#52616d';x.font='26px '+M;x.fillText(mlabel(A.yms[0])+' tot '+mlabel(A.yms[A.yms.length-1]),ix,top+120);
-  let y=top+190;
-  x.strokeStyle='#aab3ba';x.setLineDash([10,8]);x.lineWidth=2;x.beginPath();x.moveTo(ix,y-30);x.lineTo(ex,y-30);x.stroke();
+  x.fillStyle='#1b2a35';x.font='800 50px '+M;x.fillText('Jaarbon',ix,top+76);
+  x.fillStyle='#52616d';x.font='22px '+M;
+  x.fillText('Dit lijken mijn terugkerende kosten.',ix,top+118);
+  x.fillText(sav>0?'Mogelijke besparingen heb ik zelf geselecteerd.':'Nog geen mogelijke besparingen geselecteerd.',ix,top+148);
+  x.font='20px '+M;x.fillText(mlabel(A.yms[0])+' tot '+mlabel(A.yms[A.yms.length-1]),ix,top+180);
+  let y=top+255;
+  x.strokeStyle='#aab3ba';x.setLineDash([10,8]);x.lineWidth=2;x.beginPath();x.moveTo(ix,y-45);x.lineTo(ex,y-45);x.stroke();
   x.setLineDash([]);
   const dots=(xl,xr,yy)=>{x.fillStyle='#aeb3a8';for(let d=xl;d<xr;d+=10)x.fillRect(d,yy-6,3,3);};
   rows.forEach(r=>{
