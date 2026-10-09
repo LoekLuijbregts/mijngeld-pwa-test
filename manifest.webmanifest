@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "MijnGeld",
-  "short_name": "MijnGeld",
+  "name": "MijnGeld.app",
+  "short_name": "MijnGeld.app",
   "description": "Bekijk lokaal waar je geld heen ging.",
   "lang": "nl-NL",
   "start_url": "./index.html?homescreen=1",

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; worker-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
-<title>Waar gaat je geld heen?</title>
+<title>MijnGeld.app - Waar gaat je geld heen?</title>
 <style>
 :root{--desk:#E4E8EC;--paper:#FFFEFA;--ink:#14232F;--steel:#3C5A78;--mist:#A8BDD0;--mark:#F6D94E;--stamp:#C8323C;--mut:#51606C;--rule:#C3CCD4;
 --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -201,15 +201,15 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
 <meta name="theme-color" content="#E4E8EC">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="MijnGeld">
+<meta name="apple-mobile-web-app-title" content="MijnGeld.app">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-192.png">
-<link rel="icon" href="./icon-192.png" type="image/png">
+<link rel="icon" href="./brand-icon.svg" type="image/svg+xml">
 </head>
 <body>
 <header class="top">
   <div class="wrapw">
-    <a class="brand" href="#top">Waar gaat je geld heen?</a>
+    <a class="brand" href="#top">MijnGeld.app</a>
     <nav class="tabs hide" id="tabs" aria-label="Onderdelen"><a href="#bon">Jaarbon</a><a href="#mnd">Per maand</a><a href="#kal">Kalender</a></nav>
     <div class="lock" id="net"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span id="nettxt"></span></div>
   </div>
@@ -231,13 +231,13 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
         <span class="t">MT940 of CSV, van een of meer rekeningen. Tik of klik om te kiezen, of sleep ze hierheen.</span>
         <input type="file" id="file" multiple accept=".csv,.txt,.sta,.mt940,.tab,.tsv,.940" class="hide">
       </div>
-      <p class="note" id="iosnote">Open deze pagina in Safari, tik op Deel en kies Zet op beginscherm. Open MijnGeld daarna via het pictogram.</p>
+      <p class="note" id="iosnote">Open deze pagina in Safari, tik op Deel en kies Zet op beginscherm. Open MijnGeld.app daarna via het pictogram.</p>
       <div class="acts2 noprint">
         <button class="btn ghost" id="demo">Probeer eerst met voorbeeldgegevens</button>
         <button class="btn quiet hide" id="reset">Opnieuw beginnen</button>
       </div>
       <div class="files" id="files"></div>
-      <p class="priv"><b>Je bankbestanden en berekeningen worden lokaal verwerkt.</b> MijnGeld verstuurt ze niet naar ons of naar advertentie- en analysebedrijven. Zodra de webapp offline klaarstaat, kun je wifi en mobiele data uitzetten voordat je een afschrift kiest.</p>
+      <p class="priv"><b>Je bankbestanden en berekeningen worden lokaal verwerkt.</b> MijnGeld.app verstuurt ze niet naar ons of naar advertentie- en analysebedrijven.</p>
     </div>
     <div class="prev" id="prev" aria-hidden="true"></div>
   </section>
@@ -256,7 +256,7 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
 
   <section class="lp faq">
     <h2>Veelgestelde vragen</h2>
-    <details><summary>Wat gebeurt er met mijn bankgegevens?</summary><p>MijnGeld leest ze lokaal in deze webapp. De app verstuurt je bankbestanden, bedragen en berekeningen niet naar ons en bewaart ze niet op een server. Je browser en besturingssysteem kunnen buiten MijnGeld om wel technische gegevens verwerken.</p></details>
+    <details><summary>Wat gebeurt er met mijn bankgegevens?</summary><p>MijnGeld.app leest ze lokaal. De app verstuurt je bankbestanden, bedragen en berekeningen niet naar ons en bewaart ze niet op een server. Je browser en besturingssysteem kunnen buiten MijnGeld.app om wel technische gegevens verwerken.</p></details>
     <details><summary>Welke bestanden werken?</summary><p>CSV en MT940 van Nederlandse banken. Je mag meerdere bestanden en meerdere rekeningen tegelijk selecteren. Overboekingen tussen je eigen rekeningen worden herkend en tellen niet mee.</p></details>
     <details><summary>Is dit financieel advies?</summary><p>Nee. Het zijn signalen uit je eigen afschriften. Jij beslist wat je opzegt of aanpast.</p></details>
   </section>
@@ -266,7 +266,7 @@ textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px sol
       <div>
         <div id="bonbox"></div>
         <div class="acts noprint" id="acts">
-          <button class="btn mark" id="share">Deel je bon</button>
+          <button class="btn mark" id="share">Deel je MijnGeld.app-bon</button>
           <button class="btn ghost" id="ics">Herinneringen in je agenda</button>
           <button class="btn ghost" id="exp">Download als CSV</button>
           <button class="btn ghost" id="print">Afdrukken</button>
@@ -626,11 +626,11 @@ function makeICS(rec,today,cancel){
   const pad=n=>String(n).padStart(2,'0'),ds=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
   const esc=s=>String(s).replace(/([,;\\])/g,'\\$1').replace(/\n/g,'\\n');
   const stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
-  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Waar gaat je geld heen//NL','CALSCALE:GREGORIAN'];
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//MijnGeld.app//NL','CALSCALE:GREGORIAN'];
   rec.filter(r=>r.freq!=='Maandelijks'||cancel.has(r.key)).forEach(r=>{
     const d=dueDates(r,today)[0];if(!d)return;
     const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1),c=cancel.has(r.key);
-    L.push('BEGIN:VEVENT','UID:'+r.key.replace(/\W/g,'')+'-'+ds(d)+'@waargaatmijngeld','DTSTAMP:'+stamp,
+    L.push('BEGIN:VEVENT','UID:'+r.key.replace(/\W/g,'')+'-'+ds(d)+'@mijngeld.app','DTSTAMP:'+stamp,
       'DTSTART;VALUE=DATE:'+ds(d),'DTEND;VALUE=DATE:'+ds(e),
       'SUMMARY:'+esc((c?'Opzeggen voor de volgende afschrijving: ':'Afschrijving verwacht: ')+r.name+' (EUR '+r.perTime.toFixed(2).replace('.',',')+')'),
       'DESCRIPTION:'+esc('Wil je dit nog? Zeg op of vraag om een lager tarief, voordat dit bedrag weer wordt afgeschreven.'),
@@ -640,6 +640,7 @@ function makeICS(rec,today,cancel){
   return L.join('\r\n');
 }
 //==/LOGIC==
+
 
 const $=id=>document.getElementById(id);
 const eur=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR'});
@@ -678,7 +679,7 @@ function drawPreview(){
   const tot=d.reduce((s,r)=>s+r[2],0);
   $('prev').innerHTML=bonHTML({head:'Jaarbon',meta:'Voorbeeld met verzonnen gegevens',tilt:true,anim:true,interactive:false,
     rows:d.map(r=>({name:r[0],sub:r[1],amount:eur.format(r[2]),mark:r[3]})),
-    foot:'<div class="tl big"><span>Totaal per jaar</span><b>'+eur.format(tot)+'</b></div>'+barcode()+'<div class="fine">Berekend op je eigen computer.</div>'});
+    foot:'<div class="tl big"><span>Totaal per jaar</span><b>'+eur.format(tot)+'</b></div>'+barcode()+'<div class="fine">Lokaal berekend met MijnGeld.app.</div>'});
 }
 
 async function readFile(f){
@@ -726,11 +727,11 @@ function drawBon(){
   const lim=(SHOWALL||A.rec.length<=BONMAX)?A.rec.length:BONMAX,last=A.yms[A.yms.length-1];
   $('bonbox').innerHTML=bonHTML({head:'Jaarbon',meta:mlabel(A.yms[0])+' tot '+mlabel(last)+', '+A.rec.length+' regels',nr:'JB-'+last,stamp:true,anim:FIRST,interactive:true,
     rows:A.rec.slice(0,lim).map(r=>({key:r.key,name:r.name,sub:r.freq+', '+eur.format(r.perTime)+'. Volgende: '+nextLabel(r),amount:eur.format(r.perYear),mark:marks.has(r.name),off:CANCEL.has(r.key),det:detHTML(r)})),
-    foot:'<div class="tl big"><span>Totaal per jaar</span><b id="tTot">'+eur.format(tot)+'</b></div><div class="tl sav hide" id="tSav"><span>Weg ermee</span><b id="tSavV"></b></div><div class="tl hide" id="tNet"><span>Blijft over</span><b id="tNetV"></b></div>'+(A.rec.length>BONMAX?'<button class="more" id="bonmore">'+(SHOWALL?'Toon alleen de grootste '+BONMAX:'Toon alle '+A.rec.length+' vaste lasten')+'</button>':'')+barcode()+'<div class="fine">Berekend op je eigen computer. Er is niets verstuurd.</div>'});
+    foot:'<div class="tl big"><span>Totaal per jaar</span><b id="tTot">'+eur.format(tot)+'</b></div><div class="tl sav hide" id="tSav"><span>Mogelijke besparing per jaar</span><b id="tSavV"></b></div><div class="tl hide" id="tNet"><span>Na mijn keuzes</span><b id="tNetV"></b></div>'+(A.rec.length>BONMAX?'<button class="more" id="bonmore">'+(SHOWALL?'Toon alleen de grootste '+BONMAX:'Toon alle '+A.rec.length+' vaste lasten')+'</button>':'')+barcode()+'<div class="fine">Lokaal berekend met MijnGeld.app. Er is niets verstuurd.</div>'});
   updBon();
 }
 function updBon(){
-  const sav=A.rec.filter(r=>CANCEL.has(r.key)).reduce((s,r)=>s+r.perYear,0),tot=sumPY(()=>true);
+  const {saving:sav,total:tot}=shareSummary();
   $('tSav').classList.toggle('hide',!sav);$('tNet').classList.toggle('hide',!sav);
   if(sav){$('tSavV').textContent='-'+eur.format(sav);$('tNetV').textContent=eur.format(tot-sav);}
 }
@@ -813,13 +814,18 @@ function openLetter(key){
   $('mbox').innerHTML='<div class="rowx"><h2>Opzegbrief</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">Pas aan en stuur door via de website of klantenservice van de partij.</p><textarea class="letter" id="ltxt" readonly>'+esc(t)+'</textarea><div style="margin-top:10px"><button class="btn" id="mcopy">Kopieer tekst</button></div>';
   $('modal').classList.add('on');
 }
+function shareSummary(){
+  const selected=A.rec.filter(r=>CANCEL.has(r.key));
+  const total=sumPY(()=>true),saving=selected.reduce((sum,r)=>sum+r.perYear,0);
+  return {total,saving,remaining:Math.max(0,total-saving),selectedCount:selected.length};
+}
 function shareCanvas(withNames){
   const rows=[];
   if(withNames)A.rec.slice(0,9).forEach(r=>rows.push([r.name,r.perYear]));
   else{const g={};A.rec.forEach(r=>{g[r.cat]=(g[r.cat]||0)+r.perYear;});Object.keys(g).sort((a,b)=>g[b]-g[a]).slice(0,9).forEach(c=>rows.push([c,g[c]]));}
-  const tot=sumPY(()=>true),sav=A.rec.filter(r=>CANCEL.has(r.key)).reduce((s,r)=>s+r.perYear,0);
+  const {total:tot,saving:sav,remaining,selectedCount}=shareSummary();
   const W=1080,top=90,px=150,pw=780,rowH=56;
-  const ph=200+rows.length*rowH+50+150+(sav>0?120:0)+110+60,H=top+ph+230;
+  const ph=200+rows.length*rowH+50+150+(sav>0?210:0)+110+60,H=top+ph+230;
   const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   x.fillStyle='#E4E8EC';x.fillRect(0,0,W,H);
   x.save();x.shadowColor='rgba(20,35,47,.30)';x.shadowBlur=44;x.shadowOffsetY=20;
@@ -827,7 +833,10 @@ function shareCanvas(withNames){
   for(let xx=px+pw;xx>px;xx-=28){x.lineTo(xx-14,top+ph+16);x.lineTo(xx-28,top+ph);}
   x.closePath();x.fill();x.restore();
   const M='ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',ix=px+50,ex=px+pw-50;
-  x.fillStyle='#1b2a35';x.font='800 46px '+M;x.fillText('Jaarbon',ix,top+80);
+  const title=sav>0?'MijnGeld.app - mogelijke besparing':'MijnGeld.app - mijn jaaroverzicht';
+  let titleSize=46;x.fillStyle='#1b2a35';
+  do{x.font='800 '+titleSize+'px '+M;titleSize-=2;}while(x.measureText(title).width>ex-ix&&titleSize>28);
+  x.fillText(title,ix,top+80);
   x.fillStyle='#52616d';x.font='26px '+M;x.fillText(mlabel(A.yms[0])+' tot '+mlabel(A.yms[A.yms.length-1]),ix,top+120);
   let y=top+190;
   x.strokeStyle='#aab3ba';x.setLineDash([10,8]);x.lineWidth=2;x.beginPath();x.moveTo(ix,y-30);x.lineTo(ex,y-30);x.stroke();
@@ -845,15 +854,19 @@ function shareCanvas(withNames){
   x.strokeStyle='#aab3ba';x.setLineDash([10,8]);x.beginPath();x.moveTo(ix,y-20);x.lineTo(ex,y-20);x.stroke();x.setLineDash([]);
   y+=40;
   const line=(label,val,big,col)=>{x.fillStyle=col||'#1b2a35';x.font=(big?'800 32px ':'26px ')+M;x.fillText(label,ix,y);const lw=x.measureText(label).width;let fs=big?66:34,w;do{x.font='800 '+fs+'px '+M;w=x.measureText(val).width;fs-=2;}while(lw+w+28>ex-ix&&fs>20);x.fillText(val,ex-w,y);y+=big?96:70;};
-  line('Totaal per jaar',eur.format(tot),true);
-  if(sav>0){line('Weg ermee','-'+eur.format(sav),false,'#C8323C');line('Blijft over',eur.format(tot-sav),false);}
+  line('Vaste lasten per jaar',eur.format(tot),true);
+  if(sav>0){
+    x.fillStyle='#F6D94E';x.fillRect(ix-12,y-50,ex-ix+24,78);
+    line('Mogelijke besparing',eur.format(sav),true,'#14232F');
+    x.fillStyle='#52616d';x.font='20px '+M;x.fillText('Totaal van '+selectedCount+' zelf aangevinkte '+(selectedCount===1?'kostenpost':'kostenposten')+' per jaar',ix,y-34);y+=30;
+    line('Na mijn keuzes',eur.format(remaining),false);
+  }
   let bx=ix,seed=11;x.fillStyle='#1b2a35';
   while(bx<ex){seed=(seed*16807)%2147483647;const w=2+seed%5,g=2+(seed>>3)%5;x.fillRect(bx,y,w,70);bx+=w+g;}
   y+=106;x.fillStyle='#52616d';x.font='22px '+M;
-  const f1='Lokaal berekend op mijn apparaat.';x.fillText(f1,ix+(ex-ix-x.measureText(f1).width)/2,y);
-  x.fillStyle='#14232F';x.font='700 30px system-ui,sans-serif';
-  const cap=CONFIG.SHARE_URL?'Maak je eigen jaarbon: '+CONFIG.SHARE_URL:'MijnGeld verstuurt mijn bankgegevens niet.';
-  x.fillText(cap,px,top+ph+120);
+  const f1='Lokaal berekend. Mijn bankgegevens zijn niet verstuurd.';x.fillText(f1,ix+(ex-ix-x.measureText(f1).width)/2,y);
+  x.fillStyle='#14232F';x.font='800 42px system-ui,sans-serif';
+  const brand='MijnGeld.app';x.fillText(brand,(W-x.measureText(brand).width)/2,top+ph+120);
   return c;
 }
 function toast(t){let e=$('toast');if(!e){e=document.createElement('div');e.id='toast';e.setAttribute('role','status');e.style.cssText='position:fixed;left:16px;right:16px;bottom:18px;max-width:460px;margin:0 auto;background:#14232F;color:#fff;padding:12px 16px;border-radius:12px;font:600 14px/1.4 system-ui,sans-serif;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.3)';document.body.appendChild(e);}
@@ -869,16 +882,16 @@ async function saveBlob(blob,name,type){
 }
 function openShare(withNames){
   const c=shareCanvas(withNames);
-  $('mbox').innerHTML='<div class="rowx"><h2>Deel je bon</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">Standaard staan er alleen categorieen op, geen namen van partijen en geen bankgegevens.</p><label class="chk"><input type="checkbox" id="swn"'+(withNames?' checked':'')+'> Toon namen van partijen</label><img alt="Deelbare jaarbon" src="'+c.toDataURL('image/png')+'"><div><button class="btn mark" id="mdl">Bewaar of deel afbeelding</button></div><p class="note">Lukt dat niet? Houd de afbeelding hierboven ingedrukt en kies bewaren.</p>';
+  $('mbox').innerHTML='<div class="rowx"><h2>Deel je MijnGeld.app-bon</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">De mogelijke besparing is het opgetelde jaarbedrag van de kosten die je zelf hebt aangevinkt. Standaard staan er alleen categorieen op, geen namen van partijen en geen bankgegevens.</p><label class="chk"><input type="checkbox" id="swn"'+(withNames?' checked':'')+'> Toon namen van partijen</label><img alt="Deelbare MijnGeld.app-bon" src="'+c.toDataURL('image/png')+'"><div><button class="btn mark" id="mdl">Bewaar of deel afbeelding</button></div><p class="note">Lukt dat niet? Houd de afbeelding hierboven ingedrukt en kies bewaren.</p>';
   $('modal').classList.add('on');
-  $('mdl').onclick=()=>c.toBlob(b=>saveBlob(b,'mijn-jaarbon.png','image/png'));
+  $('mdl').onclick=()=>c.toBlob(b=>saveBlob(b,'mijngeld-app-mijn-overzicht.png','image/png'));
 }
 function exportCSV(){
   const rows=[['Naam','Categorie','Frequentie','Per keer','Per jaar','Laatst betaald','Opzeggen']].concat(A.rec.map(r=>[r.name,r.cat,r.freq,r.perTime.toFixed(2).replace('.',','),r.perYear.toFixed(2).replace('.',','),dlabel(r.last),CANCEL.has(r.key)?'ja':'']));
   const t='﻿'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
   saveBlob(new Blob([t],{type:'text/csv;charset=utf-8'}),'terugkerende-kosten.csv','text/csv');
 }
-function netState(){const e=$('net');if(!e)return;$('nettxt').textContent=navigator.onLine?'Lokale verwerking':'Offline en klaar voor gebruik';}
+function netState(){const e=$('net');if(!e)return;$('nettxt').textContent=navigator.onLine?'MijnGeld.app verwerkt lokaal':'MijnGeld.app werkt offline';}
 
 const drop=$('drop'),inp=$('file');
 try{if(!/iPhone|iPad|iPod/i.test(navigator.userAgent)&&!(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1))$('iosnote').classList.add('hide');}catch(e){}
@@ -934,7 +947,7 @@ drawPreview();
     if(note&&isiOS){
       note.classList.remove('hide');
       note.textContent=standalone
-        ?'MijnGeld staat op je beginscherm en is klaar voor offline gebruik.'
+        ?'MijnGeld.app staat op je beginscherm en is klaar voor offline gebruik.'
         :'Installeer eenmalig: tik in Safari op Deel, kies Zet op beginscherm en zet Open als webapp aan.';
     }
   }

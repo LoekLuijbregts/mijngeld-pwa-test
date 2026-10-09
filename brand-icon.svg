@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="MijnGeld.app pictogram">
+  <rect width="1024" height="1024" fill="#14232f"/>
+  <path fill="#fffefa" d="M278 176h468v616l-47-31-47 31-47-31-47 31-47-31-47 31-47-31-47 31-47-31-47 31V176z"/>
+  <rect x="354" y="282" width="316" height="52" rx="26" fill="#14232f"/>
+  <rect x="354" y="390" width="210" height="34" rx="17" fill="#8a969e"/>
+  <rect x="598" y="390" width="72" height="34" rx="17" fill="#14232f"/>
+  <rect x="354" y="464" width="156" height="34" rx="17" fill="#8a969e"/>
+  <rect x="598" y="464" width="72" height="34" rx="17" fill="#14232f"/>
+  <path fill="#f6d94e" d="M330 550h364v108H330z"/>
+  <path fill="#14232f" d="M373 588h165v32H373zm225 0h53v32h-53z"/>
+  <circle cx="698" cy="707" r="64" fill="#c8323c"/>
+  <path d="m670 708 19 20 38-43" fill="none" stroke="#fffefa" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

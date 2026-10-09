@@ -1,8 +1,9 @@
-const CACHE_NAME='mijngeld-pwa-test-v1';
+const CACHE_NAME='mijngeld-pwa-test-v2';
 const APP_SHELL=[
   './',
   './index.html',
   './manifest.webmanifest',
+  './brand-icon.svg',
   './icon-192.png',
   './icon-512.png'
 ];
