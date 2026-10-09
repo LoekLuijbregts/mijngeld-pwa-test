@@ -697,7 +697,7 @@ function bonHTML(o){
     (o.interactive?'<button class="nm" data-key="'+esc(r.key)+'"><span>'+esc(r.name)+'</span></button>':'<div class="nm"><span>'+esc(r.name)+'</span></div>')+
     '<span class="am">'+r.amount+'</span><div class="sub">'+esc(r.sub)+'</div>'+
     (o.interactive?'<div class="det hide">'+r.det+'</div>':'')+'</div>').join('');
-  return '<div class="bon'+(o.interactive?'':' ro')+(o.tilt?' tilt':'')+(o.anim?'':' still')+'"><h2>'+esc(o.head)+'</h2><div class="meta">'+esc(o.meta)+'</div><div class="sep"></div>'+                                                                                                                                
+  return '<div class="bon'+(o.interactive?'':' ro')+(o.tilt?' tilt':'')+(o.anim?'':' still')+'"><h2>'+esc(o.head)+'</h2><div class="meta">'+esc(o.meta)+'</div><div class="sep"></div>'+
     (rows||'<div class="sub">Geen terugkerende kosten herkend. Upload afschriften van 12 maanden voor het beste resultaat.</div>')+
     '<div class="sep"></div>'+o.foot+(o.stamp?'<div class="stamp" aria-hidden="true">BEWAAR</div>':'')+'</div>';
 }
