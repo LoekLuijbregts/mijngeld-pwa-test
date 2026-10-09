@@ -1,0 +1,949 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; worker-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'">
+<title>Waar gaat je geld heen?</title>
+<style>
+:root{--desk:#E4E8EC;--paper:#FFFEFA;--ink:#14232F;--steel:#3C5A78;--mist:#A8BDD0;--mark:#F6D94E;--stamp:#C8323C;--mut:#51606C;--rule:#C3CCD4;
+--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+--mono:ui-monospace,"SF Mono","Cascadia Mono","Roboto Mono",Menlo,Consolas,monospace}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--desk);color:var(--ink);font:16px/1.55 var(--sans)}
+.hide{display:none!important}
+:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+.wrapw{max-width:1120px;margin:0 auto;padding:0 20px}
+
+.top{position:sticky;top:0;z-index:5;background:rgba(228,232,236,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--rule)}
+.top .wrapw{display:flex;align-items:center;gap:16px;height:56px}
+.brand{font-weight:800;letter-spacing:-.02em;color:var(--ink);text-decoration:none;font-size:17px;white-space:nowrap}
+.tabs{display:flex;gap:2px}
+.tabs a{padding:6px 12px;border-radius:99px;color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}
+.tabs a:hover{background:var(--paper)}
+.lock{white-space:nowrap;margin-left:auto;display:inline-flex;gap:7px;align-items:center;font-size:13px;font-weight:600;color:var(--steel)}
+.lock svg{flex:none}
+
+.intro{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:56px;padding:60px 0 44px;align-items:start}
+.intro h1{font-size:clamp(46px,7.6vw,88px);line-height:.96;letter-spacing:-.045em;font-weight:800;margin:0 0 20px;max-width:9.5ch}
+.sub{font-size:19px;line-height:1.5;max-width:46ch;margin:0 0 28px;color:#26363f}
+.prev{padding-top:8px;padding-bottom:20px}
+
+.slot{position:relative;background:var(--ink);color:#fff;border-radius:14px;padding:66px 24px 28px;cursor:pointer;overflow:hidden}
+.slot .sheet{position:absolute;top:10px;left:50%;width:46%;height:30px;transform:translateX(-50%);background:var(--paper);border-radius:2px 2px 0 0;background-image:repeating-linear-gradient(0deg,transparent 0 6px,#c9d1d8 6px 7px);background-size:70% 100%;background-repeat:no-repeat;background-position:center}
+.slot .bar{position:absolute;top:32px;left:50%;width:62%;height:10px;transform:translateX(-50%);border-radius:5px;background:#05090c;box-shadow:inset 0 2px 3px rgba(0,0,0,.7);transition:background .15s,box-shadow .15s}
+.slot.over .bar{background:var(--mark);box-shadow:0 0 0 6px rgba(246,217,78,.25)}
+.slot b{display:block;font-size:22px;letter-spacing:-.02em;margin-bottom:4px}
+.slot span.t{color:#c4d0da;font-size:15px}
+.acts2{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:14px}
+.files{margin-top:10px;font-size:14px}
+.files .err{color:var(--stamp);font-weight:600}
+.priv{margin:18px 0 0;font-size:15px;color:#26363f;max-width:50ch}
+.priv b{font-weight:800}
+
+.btn{line-height:1.2;font:700 15px/1.2 var(--sans);padding:12px 18px;border-radius:10px;border:2px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+.btn:hover{filter:brightness(1.15)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.ghost:hover{background:var(--paper);filter:none}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--ink);text-decoration:underline;padding:12px 6px}
+.btn.mark{background:var(--mark);border-color:var(--mark);color:var(--ink)}
+.btn.sm{padding:5px 11px;font-size:13px;border-radius:8px}
+
+.lp h2{font-size:30px;letter-spacing:-.03em;margin:0 0 20px;line-height:1.1}
+.lp{padding:30px 0 40px;border-top:1px solid var(--rule)}
+.steps{list-style:none;counter-reset:st;margin:0 0 20px;padding:0;display:grid;gap:10px;max-width:52ch}
+.steps li{counter-increment:st;display:grid;grid-template-columns:30px 1fr;column-gap:12px;align-items:start}
+.steps li::before{content:counter(st);grid-row:1/3;font:800 28px/1 var(--sans);letter-spacing:-.04em;color:var(--steel)}
+.steps b{font-size:16px;letter-spacing:-.01em;line-height:1.25}
+.steps span{color:#26363f;font-size:14.5px;line-height:1.35}
+#iosnote{font-size:13px;margin:10px 0 0}
+.how ol{list-style:none;counter-reset:s;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;padding:0;margin:0}
+.how li::before{counter-increment:s;content:counter(s);display:block;font:800 52px/1 var(--sans);letter-spacing:-.04em;color:var(--steel);margin-bottom:10px}
+.how h3{margin:0 0 4px;font-size:20px;letter-spacing:-.02em}
+.how p{margin:0;color:#26363f;max-width:34ch}
+.gets ul{list-style:none;padding:0;margin:0;columns:2;column-gap:40px}
+.gets li{break-inside:avoid;padding:12px 0;border-bottom:1px solid var(--rule);font-weight:600}
+.gets li span{display:block;font-weight:400;color:var(--mut);font-size:15px}
+.faq details{border-bottom:1px solid var(--rule);padding:14px 0}
+.faq summary{font-weight:700;cursor:pointer;font-size:17px}
+.faq p{margin:8px 0 0;max-width:62ch;color:#26363f}
+
+body.has-data .steps,body.has-data .lp,body.has-data .prev,body.has-data .intro .sub,body.has-data .priv,body.has-data .slot .sheet,body.has-data .slot .bar{display:none}
+body.has-data .intro{grid-template-columns:1fr;padding:22px 0 0;gap:0}
+body.has-data .intro h1{font-size:30px;letter-spacing:-.03em;max-width:none;margin:0 0 14px;line-height:1.1}
+body.has-data .slot{padding:16px 20px;border-radius:12px}
+body.has-data .slot b{font-size:16px;display:inline;margin:0 8px 0 0}
+body.has-data .slot span.t{font-size:14px}
+
+.bon{position:relative;background:var(--paper);padding:26px 24px 24px;font-family:var(--mono);font-size:14px;line-height:1.45;color:#1b2a35;box-shadow:0 1px 0 rgba(20,35,47,.06),0 20px 40px -20px rgba(20,35,47,.4);max-width:480px;margin-bottom:12px}
+.bon.tilt{transform:rotate(-1.3deg);margin-left:auto;margin-right:auto}
+.bon::after{content:"";position:absolute;left:0;right:0;top:100%;height:9px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M0 0h14L7 9z' fill='%23FFFEFA'/%3E%3C/svg%3E") repeat-x}
+.bon h2{font:800 24px var(--mono);margin:0;letter-spacing:-.02em}
+.bon .meta{color:#52616d;font-size:12.5px;margin:2px 0 0}
+.bon .nr{color:#52616d;font-size:11.5px;letter-spacing:.04em}
+.bon .stamp{position:absolute;right:20px;top:24px;transform:rotate(7deg);border:3px solid #c0392b;color:#c0392b;font:800 15px var(--mono);letter-spacing:.08em;padding:3px 10px;border-radius:4px;opacity:.78;pointer-events:none}
+.bon .more{display:block;width:100%;margin:6px 0 0;padding:9px;border:1.5px dashed #aab3ba;background:none;font:600 13px var(--mono);color:#1b2a35;cursor:pointer;border-radius:4px}
+.bon .more:hover{background:#f3f0e6}
+@media print{.bon .more{display:none}}
+.bon .sep{border-top:2px dashed #aab3ba;margin:14px 0}
+.bl{display:grid;grid-template-columns:22px minmax(0,1fr) auto;column-gap:8px;align-items:baseline;padding:5px 0}
+.bon.ro .bl{grid-template-columns:minmax(0,1fr) auto}
+.bon.ro .bl .sub{grid-column:1/3}
+.bl .nm{display:flex;gap:6px;align-items:baseline;min-width:0;background:none;border:0;padding:0;font:inherit;color:inherit;text-align:left}
+button.nm{cursor:pointer}
+.bl .nm span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:78%}
+.bl .nm::after{content:"";flex:1;min-width:12px;border-bottom:2px dotted #aeb3a8;transform:translateY(-3px)}
+.bl .am{font-weight:700;white-space:nowrap}
+.bl .sub{grid-column:2/4;font-size:12px;color:#52616d;margin:0}
+.bl .det{grid-column:2/4;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0 4px;font-family:var(--sans);font-size:13px}
+.bl .det select{font:inherit;padding:4px 6px;border-radius:6px;border:1px solid var(--rule);background:#fff;max-width:200px}
+.bl input[type=checkbox]{width:16px;height:16px;margin:2px 0 0;accent-color:var(--stamp);cursor:pointer}
+.bl.mk .nm span{background:linear-gradient(transparent 52%,var(--mark) 52% 90%,transparent 90%);padding:0 2px;margin:0 -2px}
+.bl.off .nm span,.bl.off .am{text-decoration:line-through;text-decoration-color:var(--stamp);text-decoration-thickness:2px;opacity:.6}
+.tl{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:3px 0}
+.tl.big{font-weight:800}
+.tl.big b{font-size:32px;letter-spacing:-.04em}
+.tl b{font-weight:800}
+.tl.sav b{color:var(--stamp)}
+.bc{display:block;width:100%;height:34px;margin:18px 0 6px}
+.fine{font-size:11.5px;color:#52616d;text-align:center}
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 10px;max-width:480px}
+.legend{font-size:13.5px;color:var(--mut);max-width:48ch;margin:6px 0 0}
+.sw{display:inline-block;width:26px;height:10px;background:var(--mark);margin-right:6px;vertical-align:middle}
+
+@keyframes feed{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.bon:not(.still) .bl{opacity:0;animation:feed .28s ease-out forwards;animation-delay:calc(var(--i)*38ms)}
+@media (prefers-reduced-motion:reduce){.bon .bl{animation:none!important;opacity:1!important}html{scroll-behavior:auto}}
+
+.res{display:grid;grid-template-columns:minmax(0,480px) minmax(0,1fr);gap:56px;align-items:start;padding-top:22px}
+.lead{font-size:21px;line-height:1.45;letter-spacing:-.01em;max-width:46ch;margin:0 0 26px}
+.lead b{font-weight:800}
+.neg{color:var(--stamp)}
+.sec{padding-top:56px}
+.sec h2{font-size:28px;letter-spacing:-.03em;margin:0 0 6px;line-height:1.15}
+.note{font-size:14.5px;color:var(--mut);margin:0 0 14px;max-width:60ch}
+ul.ins{list-style:none;padding:0;margin:0 0 34px}
+ul.ins li{border-left:6px solid var(--mark);padding:3px 0 3px 14px;margin:0 0 14px;max-width:58ch}
+ul.ins li.info{border-left-color:var(--mist)}
+.cb{display:grid;grid-template-columns:150px minmax(0,1fr) 84px;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--rule);cursor:pointer}
+.cb:hover{background:rgba(255,255,255,.55)}
+.cb .cn{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:8px}
+.cb .tr{height:12px;background:#d2dae0;border-radius:2px;overflow:hidden}
+.cb .tr i{display:block;height:100%;background:var(--steel)}
+.cb .cv{text-align:right;font-family:var(--mono);font-size:14px;font-weight:700}
+#chart svg{width:100%;height:auto;display:block}
+#chart rect.b{cursor:pointer}
+#chart rect.b:hover{opacity:.82}
+.chartcap{min-height:24px;font-size:14.5px;margin:6px 0 0;color:#26363f}
+.legendrow{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13.5px;color:var(--mut);margin-top:8px}
+.mxw{overflow-x:auto;margin-top:22px}
+table.mx{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.mx th,.mx td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--rule)}
+.mx th{font-size:13px;color:var(--mut);font-weight:600}
+.mx th:first-child,.mx td:first-child{text-align:left;position:sticky;left:0;background:var(--desk)}
+.mx td.cell{cursor:pointer}
+.mx td.cell:hover{outline:2px solid var(--ink);outline-offset:-2px}
+.mx tr.tot td{font-weight:800;border-top:2px solid var(--ink)}
+.mx .catlink{cursor:pointer;font-weight:600}
+.pos{color:#1f6f4a;font-weight:700}
+.kt{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+.km{background:var(--paper);border:1.5px solid var(--ink);border-radius:6px;padding:12px 14px 14px}
+.km .mh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.km .mh b{font-size:17px;letter-spacing:-.02em}
+.km .mh span{font-family:var(--mono);font-weight:700;font-size:14px}
+.km .kb{height:8px;background:#d2dae0;border-radius:2px;margin:8px 0 10px;overflow:hidden}
+.km .kb i{display:block;height:100%;background:var(--steel)}
+.km .ch{display:block;margin:0 0 6px;font-size:13.5px;line-height:1.35;background:linear-gradient(transparent 55%,var(--mark) 55% 92%,transparent 92%);padding:0 2px;width:fit-content;max-width:100%}
+.km .none{font-size:13px;color:var(--mut)}
+.foot{padding:56px 0 80px;font-size:13.5px;color:var(--mut);max-width:70ch}
+
+.modal{position:fixed;inset:0;background:rgba(20,35,47,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:9}
+.modal.on{display:flex}
+.mbox{background:var(--paper);border-radius:12px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:20px}
+.mbox h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.mbox table{border-collapse:collapse;width:100%;font-size:14px}
+.mbox th,.mbox td{padding:7px 8px;border-bottom:1px solid var(--rule);text-align:right}
+.mbox th:first-child,.mbox td:first-child{text-align:left}
+.mbox select{font:inherit;font-size:13px;padding:3px 6px;border-radius:6px;border:1px solid var(--rule);background:#fff;max-width:170px}
+.mbox .rowx{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:6px}
+.mbox img{width:100%;max-width:420px;display:block;margin:12px auto;border-radius:6px}
+textarea.letter{width:100%;height:270px;font:14px/1.5 var(--sans);border:1px solid var(--rule);border-radius:8px;padding:10px;background:#fff}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:8px}
+
+@media (max-width:900px){
+  .intro{grid-template-columns:1fr;gap:34px;padding:22px 0 28px}
+  .intro h1{font-size:40px;margin-bottom:12px}
+  .intro .sub{font-size:17px;line-height:1.4;margin-bottom:16px}
+  .res{grid-template-columns:1fr;gap:36px}
+  .how ol{grid-template-columns:1fr;gap:24px}
+  .gets ul{columns:1}
+  .bon.tilt{margin-left:0}
+}
+@media (max-width:640px){
+  #nettxt{display:none}
+  .top .wrapw{height:auto;flex-wrap:wrap;gap:4px 10px;padding-top:8px;padding-bottom:8px}
+  .tabs{order:3;width:100%;overflow-x:auto}
+  .tabs a{white-space:nowrap}
+  .tabs a{padding:6px 9px;font-size:13px}
+  .brand{font-size:15px}
+  .cb{grid-template-columns:104px minmax(0,1fr) 72px}
+  .slot{padding:62px 16px 22px}
+}
+@media print{
+  .top,.acts,.legend,.slot,.acts2,.noprint,#tabs{display:none!important}
+  body{background:#fff}
+  .bon{box-shadow:none;transform:none}
+  .bon .bl{opacity:1!important;animation:none!important}
+}
+</style>
+<meta name="theme-color" content="#E4E8EC">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="MijnGeld">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" href="./icon-192.png" type="image/png">
+</head>
+<body>
+<header class="top">
+  <div class="wrapw">
+    <a class="brand" href="#top">Waar gaat je geld heen?</a>
+    <nav class="tabs hide" id="tabs" aria-label="Onderdelen"><a href="#bon">Jaarbon</a><a href="#mnd">Per maand</a><a href="#kal">Kalender</a></nav>
+    <div class="lock" id="net"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span id="nettxt"></span></div>
+  </div>
+</header>
+
+<main class="wrapw" id="top">
+  <section class="intro" id="intro">
+    <div>
+      <h1>Waar gaat je geld heen?</h1>
+      <p class="sub">Selecteer 12 maanden aan afschriften. Van jouw rekening, of meerdere binnen jouw huishouden.</p>
+      <ol class="steps">
+        <li><b>Exporteer</b><span>Download in je bankomgeving je afschriften van de laatste 12 maanden als CSV of MT940.</span></li>
+        <li><b>Selecteer</b><span>Kies de bestanden in het vak hieronder. Meerdere rekeningen tegelijk mag.</span></li>
+        <li><b>Lees je jaarbon</b><span>Je vaste lasten staan op een bon, en je ziet per maand wat er uitging.</span></li>
+      </ol>
+      <div class="slot" id="drop" tabindex="0" role="button" aria-label="Kies afschriftbestanden">
+        <div class="sheet"></div><div class="bar"></div>
+        <b>Selecteer je afschriften</b>
+        <span class="t">MT940 of CSV, van een of meer rekeningen. Tik of klik om te kiezen, of sleep ze hierheen.</span>
+        <input type="file" id="file" multiple accept=".csv,.txt,.sta,.mt940,.tab,.tsv,.940" class="hide">
+      </div>
+      <p class="note" id="iosnote">Open deze pagina in Safari, tik op Deel en kies Zet op beginscherm. Open MijnGeld daarna via het pictogram.</p>
+      <div class="acts2 noprint">
+        <button class="btn ghost" id="demo">Probeer eerst met voorbeeldgegevens</button>
+        <button class="btn quiet hide" id="reset">Opnieuw beginnen</button>
+      </div>
+      <div class="files" id="files"></div>
+      <p class="priv"><b>Je bankbestanden en berekeningen worden lokaal verwerkt.</b> MijnGeld verstuurt ze niet naar ons of naar advertentie- en analysebedrijven. Zodra de webapp offline klaarstaat, kun je wifi en mobiele data uitzetten voordat je een afschrift kiest.</p>
+    </div>
+    <div class="prev" id="prev" aria-hidden="true"></div>
+  </section>
+
+  <section class="lp gets">
+    <h2>Wat je krijgt</h2>
+    <ul>
+      <li>Per maand, per categorie<span>Waar je geld naartoe ging, tot op de afschrijving.</span></li>
+      <li>Al je vaste lasten op een bon<span>Maandelijks, per kwartaal en jaarlijks, met het bedrag per jaar.</span></li>
+      <li>De kosten die maar een keer per jaar komen<span>Zodat je ze niet weer vergeet.</span></li>
+      <li>Prijsstijgingen en dubbele afschrijvingen<span>Gemarkeerd, zodat je er even naar kijkt.</span></li>
+      <li>Herinneringen in je agenda<span>14 dagen voor de volgende afschrijving.</span></li>
+      <li>Een opzegbrief die klaar staat<span>Aanpassen en versturen.</span></li>
+    </ul>
+  </section>
+
+  <section class="lp faq">
+    <h2>Veelgestelde vragen</h2>
+    <details><summary>Wat gebeurt er met mijn bankgegevens?</summary><p>MijnGeld leest ze lokaal in deze webapp. De app verstuurt je bankbestanden, bedragen en berekeningen niet naar ons en bewaart ze niet op een server. Je browser en besturingssysteem kunnen buiten MijnGeld om wel technische gegevens verwerken.</p></details>
+    <details><summary>Welke bestanden werken?</summary><p>CSV en MT940 van Nederlandse banken. Je mag meerdere bestanden en meerdere rekeningen tegelijk selecteren. Overboekingen tussen je eigen rekeningen worden herkend en tellen niet mee.</p></details>
+    <details><summary>Is dit financieel advies?</summary><p>Nee. Het zijn signalen uit je eigen afschriften. Jij beslist wat je opzegt of aanpast.</p></details>
+  </section>
+
+  <div id="out" class="hide">
+    <section class="res" id="bon">
+      <div>
+        <div id="bonbox"></div>
+        <div class="acts noprint" id="acts">
+          <button class="btn mark" id="share">Deel je bon</button>
+          <button class="btn ghost" id="ics">Herinneringen in je agenda</button>
+          <button class="btn ghost" id="exp">Download als CSV</button>
+          <button class="btn ghost" id="print">Afdrukken</button>
+        </div>
+        <p class="legend noprint"><span class="sw"></span>Geel gemarkeerd is opvallend. Vink een regel aan om hem weg te strepen, tik op de naam voor categorie en opzegbrief.</p>
+      </div>
+      <div>
+        <p class="lead" id="lead"></p>
+        <h2 style="font-size:24px;letter-spacing:-.03em;margin:0 0 10px">Wat opvalt</h2>
+        <ul class="ins" id="ins"></ul>
+        <h2 style="font-size:24px;letter-spacing:-.03em;margin:0 0 4px">Waar het naartoe ging</h2>
+        <p class="note">Klik op een categorie voor de afschrijvingen.</p>
+        <div id="cats"></div>
+      </div>
+    </section>
+
+    <section class="sec" id="mnd">
+      <h2>Per maand</h2>
+      <p class="note">Klik op een staaf voor de verdeling van die maand. Interne overboekingen tussen je eigen rekeningen tellen niet mee.</p>
+      <div id="chart"></div>
+      <p class="chartcap" id="chartcap"></p>
+      <div class="legendrow" id="legend"></div>
+      <div class="mxw" id="matrix"></div>
+    </section>
+
+    <section class="sec" id="kal">
+      <h2>Kalender</h2>
+      <p class="note">Verwachte afschrijvingen de komende 12 maanden, op basis van je vorige betalingen. Geel zijn de kosten die niet elke maand komen.</p>
+      <div class="kt" id="cal"></div>
+    </section>
+
+    <p class="foot">Alles op deze pagina is berekend in je eigen browser. Het zijn signalen uit je afschriften en geen financieel advies.</p>
+  </div>
+</main>
+
+<div class="modal" id="modal"><div class="mbox" id="mbox"></div></div>
+
+<script>
+//==LOGIC==
+const RULES=[
+['Tikkie & onderling',/tikkie|betaalverzoek|bunq\.me|paypal\.me/],
+['Abonnementen',/netflix|spotify|disney ?plus|disney\+|videoland|hbo|\bmax\b|prime video|amazon prime|youtube|apple\.com\/bill|itunes|icloud|google (one|play|storage|\*)|microsoft|adobe|dropbox|openai|chatgpt|anthropic|claude\.ai|notion|canva|nordvpn|nlziet|storytel|audible|dazn|viaplay|strava|linkedin|patreon|skyshowtime|npo plus|kindle|deezer|tidal|1password|lastpass|github|netlify|shopify|squarespace|wix\.com|godaddy|transip|hostnet|mailchimp|zoom\.us|slack|figma|midjourney|krant|volkskrant|nrc|telegraaf|de correspondent|libelle|abonnement/],
+['Telefoon & internet',/\bkpn\b|vodafone|ziggo|t-mobile|odido|simyo|tele2|lebara|hollandsnieuwe|youfone|caiway|xs4all|budget thuis|simpel|\bben\b mobiel|telfort|delta fiber|glasvezel|internet/],
+['Energie & water',/vattenfall|eneco|essent|greenchoice|engie|oxxio|budget energie|vitens|brabant water|waterbedrijf|pzem|energiedirect|frank energie|tibber|zonneplan|evides|dunea|waternet|ennatuurlijk|energie|jaarafrekening|eindafrekening|gas en licht/],
+['Verzekeringen',/verzeker|centraal beheer|achmea|interpolis|nationale.nederlanden|\bnn (schade|leven)|\basr\b|a\.s\.r|ohra|fbto|unive|univé|\bvgz\b|\bcz\b|menzis|zilveren kruis|ditzo|\bono\b|\bdsw\b|anderzorg|aegon|allianz|reaal|ing verzekeren|zorgpremie|premie/],
+['Zorg',/apotheek|huisarts|tandarts|fysio|ziekenhuis|eigen risico|opticien|specsavers|pearle|psycholoog|\bggz\b|mondhygi|beter horen|audicien|hoorcentrum|hoorapparaat|dokter|kliniek|osteopa|therapeut|dietist|logopedie|podotherap|orthodont|mondzorg|gezondheidscentrum/],
+['Wonen',/\bhuur\b|hypotheek|woonstad|\bvve\b|woningcorporatie|vestia|ymere|rochdale|woonbedrijf|woonzorg|servicekosten|obvion|stater|munt hypotheken|florius|nibc|woonfonds|argenta|attens|hypotrust|\bdhb\b|lloyds bank|ing hypotheken|erfpacht/],
+['Boodschappen',/albert heijn|\bah to go|\bah \w|jumbo|lidl|aldi|\bplus\b|dirk van|\bdirk\b|vomar|hoogvliet|\bcoop\b|\bspar\b|ekoplaza|picnic|deen|dekamarkt|poiesz|jan linders|boni|nettorama|supermarkt|bakker|slager|groente|turkse super|eurospar|slijterij|traiteur|visspec|viswinkel|vishandel|poelier|marqt|\bsuper\b|kaashandel/],
+['Horeca',/restaurant|caf[eé]|mcdonald|burger king|kfc|starbucks|thuisbezorgd|uber eats|deliveroo|domino|subway|lunchroom|brasserie|pizza|eetcafe|snackbar|bar |coffee|koffie|sushi|bistro|ijs|pannenkoek|takeaway|\bwok\b|grill|eetsalon|eten en drink|kafee|kafe\b|cafetaria|friet|doner|kebab|shoarma|ristorante|trattoria|tapas|\bpub\b|cocktail|taverne|foodcourt|\bsnack/],
+['Vervoer',/\bns\b|ns groep|ov-chipkaart|translink|ovpay|\bshell\b|\bbp\b|esso|tango|tinq|texaco|q8|argos|parkeer|parkmobile|q-park|yellowbrick|anwb|\brdw\b|garage|\buber\b|\bbolt\b|felyx|swapfiets|greenwheels|mywheels|tankstation|autowasstraat|apk|\bavia\b|\btotal\b|gulf|tamoil|lukoil|brandstof|laadpaal|fastned|allego|\btaxi\b|connexxion|arriva|\bgvb\b|\bhtm\b|qbuzz|vignet|tolweg/],
+['Sport & hobby',/sportschool|basic-fit|basic fit|fitness|david lloyd|sportcity|contributie|vereniging|zwembad|decathlon|tennis|golf|voetbal|hockey|bieb|bibliotheek|zwemv|zwemclub|sportvereniging|tennisclub|\bjudo|turnvereniging|dansschool|muziekschool|schaats|klimhal|sportpark|manege|hengelsport|scouting/],
+['Belastingen & overheid',/belastingdienst|gemeente|waterschap|\bcjib\b|\bkvk\b|kamer van koophandel|\bduo\b|\bcak\b|toeslagen|rijksoverheid|ozb|rioolheffing|afvalstoffen/],
+['Sparen & beleggen',/spaarrekening|degiro|\bbux\b|flatex|meesman|brand new day|binck|pensioen|lynx|saxo|bitvavo|coinbase|belegg|effectenrekening|\bspaar/],
+['Kinderen & onderwijs',/kinderopvang|\bbso\b|ouderbijdrage|kinderdagverblijf|schoolgeld|\bschool\b|studiekosten|speelgoed|intertoys|lego/],
+['Goede doelen',/unicef|giro555|wereldnatuurfonds|\bwnf\b|\bkwf\b|kika|oxfam|donatie|doneer|artsen zonder grenzen|amnesty|hartstichting|dierenbescherming|greenpeace|\bfonds\b/],
+['Bankkosten',/kosten (betaal|rekening|pakket|oranje)|betaalpakket|rabo ?(basis|plus)|rabopakket|bankkosten|\bcreditcard\b|\bicsc\b|american express|\bics\b|rentevergoeding|debetrente|kosten bankpas/],
+['Uitjes & vrije tijd',/efteling|beekse bergen|pretpark|dierentuin|attractiepark|bioscoop|path[eé]|kinepolis|theater|schouwburg|museum|ticketing|ticketmaster|ticketswap|eventim|concert|festival|speeltuin|bowling|escape room|zwemparadijs|speelparadijs|toverland|walibi|duinrell|madurodam|social deal|groupon/],
+['Verzorging',/kapper|kapsalon|\bhair|beauty|schoonheid|nagelsalon|nagelstudio|massage|wellness|sauna|barbier|pedicure|manicure|parfumerie|\bspa\b/],
+['Reizen & vakantie',/booking\.com|airbnb|transavia|\bklm\b|ryanair|easyjet|\btui\b|vliegtick|hotel|camping|eurostar|flixbus|vakantie|center parcs|roompot|landal|vliegen|wizz|vueling|eurowings|jet2|corendon|duty free|unifree|vakantiepark|recreatiepark|resort|hostel|stena|dfds|bed and breakfast|bungalow|eurotunnel|interrail/],
+['Contant geld',/geldautomaat|geldopname|\batm\b|\bgea\b|geldmaat|pinautomaat/],
+['Winkelen',/bol\.com|\bbol\b|coolblue|amazon|zalando|hema|action|blokker|ikea|gamma|praxis|karwei|hornbach|kruidvat|etos|h&m|primark|zara|wehkamp|mediamarkt|marktplaats|paypal|ebay|aliexpress|temu|shein|wish|vinted|bloemen|intratuin|xenos|rituals|douglas|\bmode\b|kleding|schoenen|jysk|zeeman|\btjx\b|tk maxx|bijenkorf|hunkem|c&a|we fashion|intersport|leen bakker|kwantum|woonexpress|groenrijk|tuincentrum|bouwmarkt|hubo|halfords|lichtspecialist/]
+];
+const SPAAR_RE=RULES.find(r=>r[0]==='Sparen & beleggen')[1];
+const EXCL=new Set(['Boodschappen','Horeca','Winkelen','Contant geld','Sparen & beleggen','Tikkie & onderling','Uitjes & vrije tijd','Verzorging','Inkomsten','Eigen overboekingen']);
+const ANNUAL_CATS=new Set(['Verzekeringen','Abonnementen','Belastingen & overheid','Sport & hobby','Bankkosten','Telefoon & internet']);
+const ANNUAL_RE=/jaar|annual|verleng|renewal|contributie|domein|licentie|\bvve\b|premie|hosting|lidmaatschap/i;
+const IBAN_RE=/\b[A-Z]{2}\d{2}[A-Z]{4}\d{10}\b/;
+
+function parseAmount(s){
+  if(s==null)return NaN;
+  s=String(s).replace(/[€\s\u00a0]/g,'').replace(/[A-Za-z]/g,'').replace(/^\+/,'');
+  const neg=s.startsWith('-')||/^\(.*\)$/.test(s);
+  s=s.replace(/[-()]/g,'');
+  const c=s.includes(','),d=s.includes('.');
+  if(c&&d){ if(s.lastIndexOf(',')>s.lastIndexOf('.'))s=s.replace(/\./g,'').replace(',','.'); else s=s.replace(/,/g,''); }
+  else if(c){ s=s.replace(',','.'); }
+  else if(d){ if(/^\d{1,3}(\.\d{3})+$/.test(s))s=s.replace(/\./g,''); }
+  const v=parseFloat(s);
+  return neg?-v:v;
+}
+function mkDate(y,m,d){ y=+y;m=+m;d=+d; if(m<1||m>12||d<1||d>31)return null; return new Date(y,m-1,d); }
+function parseDate(s){
+  s=String(s||'').trim(); let m;
+  if((m=s.match(/^(\d{4})-(\d{2})-(\d{2})/)))return mkDate(m[1],m[2],m[3]);
+  if((m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})/)))return mkDate(m[3],m[2],m[1]);
+  if((m=s.match(/^(\d{4})(\d{2})(\d{2})$/)))return mkDate(m[1],m[2],m[3]);
+  return null;
+}
+function ymOf(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');}
+
+function splitCSV(text){
+  text=text.replace(/^\uFEFF/,'');
+  const first=text.split(/\r?\n/,1)[0]||'';
+  let d=';',best=-1;
+  for(const c of [';',',','\t']){const n=first.split(c).length-1; if(n>best){best=n;d=c;}}
+  const rows=[];let row=[],f='',q=false;
+  for(let i=0;i<text.length;i++){
+    const ch=text[i];
+    if(q){ if(ch==='"'){ if(text[i+1]==='"'){f+='"';i++;} else q=false; } else f+=ch; }
+    else if(ch==='"')q=true;
+    else if(ch===d){row.push(f);f='';}
+    else if(ch==='\n'){row.push(f);rows.push(row);row=[];f='';}
+    else if(ch==='\r'){}
+    else f+=ch;
+  }
+  if(f!==''||row.length){row.push(f);rows.push(row);}
+  return {rows:rows.filter(r=>r.some(x=>x.trim()!=='')),delim:d};
+}
+function mapHeaders(r){
+  const hs=r.map(x=>x.toLowerCase().trim());
+  const find=(ex,inc=[])=>{
+    for(const e of ex){const i=hs.indexOf(e); if(i>=0)return i;}
+    for(const e of inc){const i=hs.findIndex(x=>x.includes(e)); if(i>=0)return i;}
+    return -1;
+  };
+  const m={
+    date:find(['datum','date','boekdatum','transactiedatum','started date','completed date'],['datum','date']),
+    amt:find(['bedrag (eur)','bedrag','amount','transactiebedrag'],['bedrag','amount']),
+    sign:find(['af bij','af/bij','af / bij','debet/credit','credit/debet','debit/credit','credit/debit'],[]),
+    name:find(['naam / omschrijving','naam tegenpartij','tegenpartij','name','naam','counterparty name','beneficiary'],['naam']),
+    counter:find(['tegenrekening','tegenrekening iban/bban','counterparty'],['tegenrekening']),
+    own:find(['rekening','iban/bban','account','rekeningnummer','iban'],[])
+  };
+  m.descs=hs.map((x,i)=>/omschrijving|mededeling|description|kenmerk/.test(x)&&i!==m.name?i:-1).filter(i=>i>=0);
+  if(m.name<0&&m.descs.length){m.name=m.descs[0];}
+  return m;
+}
+function parseCSVText(text){
+  const {rows,delim}=splitCSV(text);
+  const raw=[],own=new Set();
+  let hi=-1,m=null;
+  for(let i=0;i<Math.min(rows.length,6);i++){const mm=mapHeaders(rows[i]); if(mm.date>=0&&mm.amt>=0){hi=i;m=mm;break;}}
+  if(m){
+    for(let i=hi+1;i<rows.length;i++){
+      const r=rows[i];
+      const date=parseDate(r[m.date]); let amt=parseAmount(r[m.amt]);
+      if(!date||!isFinite(amt))continue;
+      if(m.sign>=0){ const sg=(r[m.sign]||'').trim().toLowerCase(); amt=/^(af|debet|d|debit)$/.test(sg)?-Math.abs(amt):Math.abs(amt); }
+      const t={date,amount:amt,name:m.name>=0?r[m.name]:'',desc:m.descs.filter(j=>j!==m.name).map(j=>r[j]).join(' ')};
+      if(m.counter>=0){const c=(r[m.counter]||'').replace(/\s/g,'').toUpperCase(); if(IBAN_RE.test(c))t.iban=c;}
+      if(m.own>=0){const o=(r[m.own]||'').replace(/\s/g,'').toUpperCase(); if(IBAN_RE.test(o))own.add(o);}
+      raw.push(t);
+    }
+  } else if(delim==='\t'){
+    for(const r of rows){
+      if(r.length<8)continue;
+      const date=parseDate(r[2]),amt=parseAmount(r[6]);
+      if(!date||!isFinite(amt))continue;
+      if(r[0]&&/^\d{6,}$/.test(r[0].trim()))own.add(r[0].trim());
+      raw.push({date,amount:amt,name:'',desc:r.slice(7).join(' ')});
+    }
+  }
+  return {raw,own};
+}
+function extractName(desc){
+  let m;
+  if((m=desc.match(/\/NAME\/([^\/]+)/i)))return m[1].trim();
+  if((m=desc.match(/Naam:\s*(.+?)(?=\s+(?:Omschrijving|Kenmerk|Machtiging|IBAN|Incassant|Referentie|Valutadatum)\b|$)/i)))return m[1].trim();
+  if((m=desc.match(/\d{2}\.\d{2}\.\d{2}\/\d{2}\.\d{2}\s+(.+?)(?:,PAS|\s*$)/)))return m[1].trim();
+  return desc.replace(/\/[A-Z]{4}\//g,' ').replace(IBAN_RE,' ').replace(/\b(SEPA|Overboeking|Incasso|algemeen|doorlopend|iDEAL|BIC|[A-Z]{6}[A-Z0-9]{2,5})\b/g,' ').replace(/\d{5,}/g,' ').replace(/\s+/g,' ').trim().slice(0,40);
+}
+function parseMT940Text(text){
+  const lines=text.replace(/\r/g,'').split('\n'),raw=[],own=new Set();
+  let cur=null,inDesc=false;
+  const flush=()=>{ if(cur){cur.desc=cur.desc.trim();cur.name=extractName(cur.desc);raw.push(cur);cur=null;} };
+  for(const line of lines){
+    let m;
+    if((m=line.match(/^:25:(.*)/))){flush();inDesc=false;const a=(m[1].match(/[A-Z]{2}\d{2}[A-Z]{4}\d{10}/)||[])[0]; if(a)own.add(a);}
+    else if((m=line.match(/^:61:(\d{2})(\d{2})(\d{2})(\d{4})?(R?[CD])[A-Z]?(\d+(?:,\d*)?)/))){
+      flush();inDesc=false;
+      const date=mkDate(2000+ +m[1],m[2],m[3]);
+      let amt=parseFloat(m[6].replace(',','.'));
+      if(m[5]==='D'||m[5]==='RC')amt=-amt;
+      cur={date,amount:amt,name:'',desc:''};
+    }
+    else if((m=line.match(/^:86:(.*)/))){ if(cur){cur.desc=m[1];inDesc=true;} }
+    else if(line.startsWith(':')){inDesc=false;}
+    else if(inDesc&&cur){ const l=line.trimEnd(); if(l==='-'||l==='-}'||l==='}')continue; cur.desc+=(cur.desc.startsWith('/')?'':' ')+l; }
+  }
+  flush();
+  return {raw,own};
+}
+function cleanKey(t){
+  const base=(t.name||t.desc||'').toLowerCase().replace(/^(ccv|bck|c&m|pay\.nl|mollie|sumup|zettle_?\d*|sp|bcc|tsp)\s*\*\s*/,'');
+  const k=base.replace(/\b(bea|gea|ideal|sepa|incasso|overboeking|apple pay|google pay|betaalautomaat|pas\d+|nr:?\w+|b\.?v\.?|n\.?v\.?)\b/g,' ').replace(/[^a-zà-ÿ ]/g,' ').replace(/\s+/g,' ').trim().split(' ').slice(0,2).join(' ');
+  return k||'onbekend';
+}
+function categorize(t){
+  if(t.amount>0)return 'Inkomsten';
+  const x=(t.name+' '+t.desc).toLowerCase().replace(/online payments stichting|stichting (mollie|derdengelden|beheer derdengelden|betaaldiensten)[a-z ]*|derdengelden|\bvia stichting\b/g,' ');
+  for(const [c,re] of RULES)if(re.test(x))return c;
+  return 'Overig';
+}
+function finalize(raw,own){
+  const out=[];
+  for(const t of raw){
+    if(!t.date||!isFinite(t.amount)||t.amount===0)continue;
+    t.ym=ymOf(t.date);t.name=(t.name||'').trim();t.desc=(t.desc||'').trim();
+    if(!t.iban){const m=(t.desc+' '+t.name).match(IBAN_RE); if(m)t.iban=m[0];}
+    t.key=cleanKey(t);
+    t.internal=!!(t.iban&&own.has(t.iban))||/eigen rekening|interne overboeking/i.test(t.name+' '+t.desc);
+    t.cat0=categorize(t);
+    if(t.amount>0&&SPAAR_RE.test((t.name+' '+t.desc).toLowerCase()))t.sparenIn=true;
+    out.push(t);
+  }
+  return out;
+}
+function parseFiles(files){
+  let raw=[];const own=new Set(),info=[];
+  for(const f of files){
+    const isMT=/^:20:/m.test(f.text)||/:61:/.test(f.text);
+    const r=isMT?parseMT940Text(f.text):parseCSVText(f.text);
+    r.own.forEach(x=>own.add(x));
+    raw=raw.concat(r.raw);
+    info.push({name:f.name,n:r.raw.length,type:isMT?'MT940':'CSV'});
+  }
+  return {tx:finalize(raw,own),info};
+}
+function median(a){const s=[...a].sort((x,y)=>x-y),n=s.length;return n?(n%2?s[(n-1)/2]:(s[n/2-1]+s[n/2])/2):0;}
+function daysBetween(a,b){return Math.round((b-a)/864e5);}
+function analyse(txs,overrides){
+  txs.forEach(t=>{t.cat=t.internal?'Eigen overboekingen':(t.amount>0?'Inkomsten':(overrides[t.key]||t.cat0));});
+  const allYms=[...new Set(txs.filter(t=>!t.internal).map(t=>t.ym))].sort();
+  const yms=allYms.slice(-12);
+  const use=txs.filter(t=>yms.includes(t.ym));
+  const exp=use.filter(t=>t.amount<0&&!t.internal),inc=use.filter(t=>t.amount>0&&!t.internal&&!t.sparenIn),spIn=use.filter(t=>t.amount>0&&!t.internal&&t.sparenIn);
+  const matrix={},expBy={},incBy={};
+  for(const t of exp){
+    const c=matrix[t.cat]||(matrix[t.cat]={total:0});
+    c[t.ym]=(c[t.ym]||0)-t.amount;c.total-=t.amount;expBy[t.ym]=(expBy[t.ym]||0)-t.amount;
+  }
+  // Spaargeld dat terugkomt telt niet als inkomsten, maar wordt verrekend met sparen en beleggen
+  for(const t of spIn){const c=matrix['Sparen & beleggen']||(matrix['Sparen & beleggen']={total:0});c[t.ym]=(c[t.ym]||0)-t.amount;c.total-=t.amount;expBy[t.ym]=(expBy[t.ym]||0)-t.amount;}
+  for(const t of inc)incBy[t.ym]=(incBy[t.ym]||0)+t.amount;
+  const cats=Object.keys(matrix).sort((a,b)=>matrix[b].total-matrix[a].total);
+  const totExp=exp.reduce((s,t)=>s-t.amount,0)-spIn.reduce((s,t)=>s+t.amount,0),totInc=inc.reduce((s,t)=>s+t.amount,0);
+  const internalN=use.filter(t=>t.internal).length;
+  return {yms,matrix,cats,expBy,incBy,totExp,totInc,internalN,skipped:allYms.length-yms.length,use,rec:recurring(exp)};
+}
+function recurring(exp){
+  const g={};
+  for(const t of exp)(g[t.key]||(g[t.key]=[])).push(t);
+  const out=[];
+  for(const key in g){
+    const items=g[key].sort((a,b)=>a.date-b.date);
+    const cnt={};items.forEach(i=>cnt[i.cat]=(cnt[i.cat]||0)+1);
+    const cat=Object.keys(cnt).sort((a,b)=>cnt[b]-cnt[a])[0];
+    if(EXCL.has(cat))continue;
+    const amts=items.map(i=>-i.amount),med=median(amts);
+    if(med<1)continue;
+    const close=items.filter(i=>Math.abs(-i.amount-med)<=Math.max(med*0.15,1));
+    const cm=new Set(close.map(i=>i.ym)).size;
+    const gaps=[];for(let i=1;i<close.length;i++)gaps.push(daysBetween(close[i-1].date,close[i].date));
+    const gap=median(gaps);
+    let freq=null,perYear=0;
+    if(cm>=3&&gaps.length){
+      if(gap>=20&&gap<=40){freq='Maandelijks';perYear=med*12;}
+      else if(gap>=75&&gap<=110){freq='Per kwartaal';perYear=med*4;}
+      else if(gap>=160&&gap<=200){freq='Halfjaarlijks';perYear=med*2;}
+    }
+    if(!freq){
+      const text=(items[0].name+' '+items[0].desc);
+      if(close.length===2&&gaps[0]>=330&&gaps[0]<=400){freq='Jaarlijks';perYear=med;}
+      else if(close.length<=2&&med>=15&&(ANNUAL_CATS.has(cat)||ANNUAL_RE.test(text))){freq='Waarschijnlijk jaarlijks';perYear=med;}
+    }
+    if(!freq)continue;
+    const nm={};items.forEach(i=>{const n=i.name||i.desc.slice(0,40);nm[n]=(nm[n]||0)+1;});
+    const name=Object.keys(nm).sort((a,b)=>nm[b]-nm[a])[0]||key;
+    out.push({key,name,cat,freq,perTime:med,perYear,count:items.length,last:items[items.length-1].date,txs:items});
+  }
+  return out.sort((a,b)=>b.perYear-a.perYear);
+}
+function demoCSV(){
+  let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+  const now=new Date();const rows=[];
+  const tdy=now.getFullYear()+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0');
+  const add=(d,name,amt,code='BA')=>{if(d>tdy)return;rows.push([d,name,'NL91INGB0001234567','',code,amt<0?'Af':'Bij',Math.abs(amt).toFixed(2).replace('.',','),'Betaalautomaat','']);};
+  const ds=(y,m,d)=>{const dt=new Date(y,m,d);return dt.getFullYear()+String(dt.getMonth()+1).padStart(2,'0')+String(dt.getDate()).padStart(2,'0');};
+  for(let i=11;i>=0;i--){
+    const base=new Date(now.getFullYear(),now.getMonth()-i,1),y=base.getFullYear(),m=base.getMonth();
+    add(ds(y,m,25),'Werkgever BV Salaris',3200);
+    add(ds(y,m,1),'Woonstad Rotterdam huur',-1100);
+    add(ds(y,m,3),'Vattenfall Klantenservice',-118.5-rnd()*3);
+    add(ds(y,m,5),'Netflix International B.V.',i>=6?-12.99:-13.99);
+    add(ds(y,m,6),'Spotify AB',-10.99);
+    if(i<=7)add(ds(y,m,11),'Disney Plus',-9.99);
+    add(ds(y,m,7),'Basic-Fit Nederland',-29.99);
+    add(ds(y,m,8),'KPN B.V.',-52.5);
+    add(ds(y,m,9),'VGZ Zorgverzekeraar',-135.2);
+    add(ds(y,m,10),'Centraal Beheer autoverzekering',-68.4);
+    add(ds(y,m,12),'Apple.com/bill',-2.99);
+    add(ds(y,m,14),'Oranje spaarrekening eigen rekening',-200);
+    for(let k=0;k<6;k++)add(ds(y,m,2+k*4),k%3===0?'Jumbo Supermarkten':'Albert Heijn 1234',-(12+rnd()*55));
+    for(let k=0;k<3;k++)add(ds(y,m,6+k*8),'Restaurant De Gaper',-(18+rnd()*40));
+    add(ds(y,m,16),'Shell Tankstation',-(48+rnd()*25));
+    if(rnd()<.6)add(ds(y,m,20),'bol.com',-(15+rnd()*70));
+  }
+  const ay=(off,mo)=>{const d=new Date(now.getFullYear(),now.getMonth()-off,1);return [d.getFullYear(),d.getMonth()];};
+  let [y1,m1]=ay(9);add(ds(y1,m1,11),'ANWB Lidmaatschap jaarbijdrage',-59.5);
+  [y1,m1]=ay(5);add(ds(y1,m1,19),'TransIP domein en hosting verlenging',-119);
+  [y1,m1]=ay(8);add(ds(y1,m1,4),'Unive Inboedelverzekering jaarpremie',-238.4);
+  [y1,m1]=ay(3);add(ds(y1,m1,22),'Amazon Prime jaarlidmaatschap',-59);
+  [y1,m1]=ay(2);add(ds(y1,m1,9),'Gemeente Rotterdam OZB',-412.3);
+  [y1,m1]=ay(4);add(ds(y1,m1,12),'Zalando Payments',-49.95);add(ds(y1,m1,12),'Zalando Payments',-49.95);
+  const head='"Datum","Naam / Omschrijving","Rekening","Tegenrekening","Code","Af Bij","Bedrag (EUR)","Mutatiesoort","Mededelingen"';
+  return head+'\n'+rows.map(r=>r.map(x=>'"'+x+'"').join(',')).join('\n');
+}
+const STREAM=/netflix|disney|videoland|hbo|\bmax\b|prime video|amazon prime|skyshowtime|npo plus|viaplay|dazn|nlziet|apple tv/i;
+function addM(d,n){const x=new Date(d.getFullYear(),d.getMonth()+n,1);const last=new Date(x.getFullYear(),x.getMonth()+1,0).getDate();x.setDate(Math.min(d.getDate(),last));return x;}
+function stepOf(f){return f==='Maandelijks'?1:f==='Per kwartaal'?3:f==='Halfjaarlijks'?6:12;}
+function dueDates(r,today,months){
+  months=months||12;
+  const step=stepOf(r.freq),end=addM(new Date(today.getFullYear(),today.getMonth(),1),months);
+  let k=1,d=addM(r.last,step);const out=[];
+  while(d<today&&k<400){k++;d=addM(r.last,step*k);}
+  while(d<end&&out.length<24){out.push(d);k++;d=addM(r.last,step*k);}
+  return out;
+}
+function calendar(rec,today){
+  const months=[];
+  for(let i=0;i<12;i++){const d=new Date(today.getFullYear(),today.getMonth()+i,1);months.push({ym:ymOf(d),total:0,monthly:0,items:[]});}
+  const idx={};months.forEach(m=>idx[m.ym]=m);
+  rec.forEach(r=>dueDates(r,today).forEach(d=>{
+    const m=idx[ymOf(d)];if(!m)return;
+    m.total+=r.perTime;
+    if(r.freq==='Maandelijks')m.monthly+=r.perTime;else m.items.push({name:r.name,amount:r.perTime,freq:r.freq,date:d,key:r.key});
+  }));
+  return months;
+}
+function spread(a){const m=median(a);return m?(Math.max(...a)-Math.min(...a))/m:1;}
+function insights(rec,exp){
+  const out=[];
+  rec.filter(r=>r.freq!=='Waarschijnlijk jaarlijks').forEach(r=>{
+    const a=r.txs.map(t=>-t.amount).filter(v=>Math.abs(v-r.perTime)<=Math.max(r.perTime*0.15,1));
+    for(let i=2;i<=a.length-2;i++){
+      const A=a.slice(0,i),B=a.slice(i);
+      if(spread(A)<=0.02&&spread(B)<=0.02){
+        const ma=median(A),mb=median(B);
+        if(mb>=ma+Math.max(0.3,ma*0.02)){out.push({type:'prijs',name:r.name,from:ma,to:mb,per:r.freq,perYear:(mb-ma)*(12/stepOf(r.freq))});break;}
+      }
+    }
+  });
+  const st=rec.filter(r=>r.freq==='Maandelijks'&&STREAM.test(r.name+' '+r.key));
+  if(st.length>=2)out.push({type:'stream',n:st.length,names:st.map(r=>r.name),perYear:st.reduce((s,r)=>s+r.perYear,0)});
+  const small=rec.filter(r=>r.cat==='Abonnementen'&&r.freq==='Maandelijks'&&r.perTime<5);
+  if(small.length)out.push({type:'klein',n:small.length,names:small.map(r=>r.name),perYear:small.reduce((s,r)=>s+r.perYear,0)});
+  const seen={};
+  exp.forEach(t=>{
+    if(['Boodschappen','Horeca','Contant geld','Vervoer'].includes(t.cat)||-t.amount<5)return;
+    const k=t.key+'|'+t.amount.toFixed(2)+'|'+t.date.toDateString();
+    (seen[k]=seen[k]||[]).push(t);
+  });
+  Object.values(seen).filter(a=>a.length>=2).forEach(a=>out.push({type:'dubbel',name:a[0].name||a[0].key,amount:-a[0].amount,date:a[0].date,n:a.length}));
+  return out;
+}
+function makeICS(rec,today,cancel){
+  const pad=n=>String(n).padStart(2,'0'),ds=d=>d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());
+  const esc=s=>String(s).replace(/([,;\\])/g,'\\$1').replace(/\n/g,'\\n');
+  const stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Waar gaat je geld heen//NL','CALSCALE:GREGORIAN'];
+  rec.filter(r=>r.freq!=='Maandelijks'||cancel.has(r.key)).forEach(r=>{
+    const d=dueDates(r,today)[0];if(!d)return;
+    const e=new Date(d.getFullYear(),d.getMonth(),d.getDate()+1),c=cancel.has(r.key);
+    L.push('BEGIN:VEVENT','UID:'+r.key.replace(/\W/g,'')+'-'+ds(d)+'@waargaatmijngeld','DTSTAMP:'+stamp,
+      'DTSTART;VALUE=DATE:'+ds(d),'DTEND;VALUE=DATE:'+ds(e),
+      'SUMMARY:'+esc((c?'Opzeggen voor de volgende afschrijving: ':'Afschrijving verwacht: ')+r.name+' (EUR '+r.perTime.toFixed(2).replace('.',',')+')'),
+      'DESCRIPTION:'+esc('Wil je dit nog? Zeg op of vraag om een lager tarief, voordat dit bedrag weer wordt afgeschreven.'),
+      'BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Herinnering','TRIGGER:-P14D','END:VALARM','END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  return L.join('\r\n');
+}
+//==/LOGIC==
+
+const $=id=>document.getElementById(id);
+const eur=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR'});
+const eur0=new Intl.NumberFormat('nl-NL',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+const PAL=['#14232F','#3C5A78','#6F8FAE','#A8BDD0','#F2C230','#C8323C','#8A8F94'];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const mlabel=ym=>{const [y,m]=ym.split('-');return new Date(+y,+m-1,1).toLocaleDateString('nl-NL',{month:'short',year:'2-digit'});};
+const dlabel=d=>d.toLocaleDateString('nl-NL',{day:'numeric',month:'short',year:'numeric'});
+const dshort=d=>d.toLocaleDateString('nl-NL',{day:'numeric',month:'short'});
+const ALLCATS=RULES.map(r=>r[0]).concat(['Overig']);
+const CONFIG={SHARE_URL:''};
+const TODAY=()=>{const n=new Date();return new Date(n.getFullYear(),n.getMonth(),n.getDate());};
+
+let ALL=[],OV={},CANCEL=new Set(),A=null,INS=[],SEEN=new Set(),RAW=[],FIRST=true;
+
+function nextLabel(r){const d=dueDates(r,TODAY())[0];return d?dlabel(d):'-';}
+function sumPY(f){return A.rec.filter(f).reduce((s,r)=>s+r.perYear,0);}
+function colorOf(c){const i=A.cats.indexOf(c);return PAL[Math.min(i<0?6:i,6)];}
+function barcode(){
+  let s='<svg class="bc" viewBox="0 0 220 34" preserveAspectRatio="none" aria-hidden="true">',x=0,seed=11;
+  while(x<220){seed=(seed*16807)%2147483647;const w=1+seed%3,g=1+(seed>>3)%3;s+='<rect x="'+x+'" y="0" width="'+w+'" height="34" fill="#1b2a35"/>';x+=w+g;}
+  return s+'</svg>';
+}
+function bonHTML(o){
+  const rows=o.rows.map((r,i)=>'<div class="bl'+(r.off?' off':'')+(r.mark?' mk':'')+'" style="--i:'+Math.min(i,28)+'">'+
+    (o.interactive?'<input type="checkbox" class="cx" data-key="'+esc(r.key)+'" aria-label="Zeg '+esc(r.name)+' op"'+(r.off?' checked':''):'')+(o.interactive?'>':'')+
+    (o.interactive?'<button class="nm" data-key="'+esc(r.key)+'"><span>'+esc(r.name)+'</span></button>':'<div class="nm"><span>'+esc(r.name)+'</span></div>')+
+    '<span class="am">'+r.amount+'</span><div class="sub">'+esc(r.sub)+'</div>'+
+    (o.interactive?'<div class="det hide">'+r.det+'</div>':'')+'</div>').join('');
+  return '<div class="bon'+(o.interactive?'':' ro')+(o.tilt?' tilt':'')+(o.anim?'':' still')+'"><h2>'+esc(o.head)+'</h2><div class="meta">'+esc(o.meta)+'</div>'+(o.nr?'<div class="nr">Bonnummer '+esc(o.nr)+'</div>':'')+'<div class="sep"></div>'+
+    (rows||'<div class="sub">Geen terugkerende kosten herkend. Upload afschriften van 12 maanden voor het beste resultaat.</div>')+
+    '<div class="sep"></div>'+o.foot+(o.stamp?'<div class="stamp" aria-hidden="true">BEWAAR</div>':'')+'</div>';
+}
+function drawPreview(){
+  const d=[['Huur','Maandelijks, '+eur.format(1100),13200,false],['Zorgverzekering','Maandelijks, '+eur.format(135.2),1622.4,false],['Energie','Maandelijks, '+eur.format(120.38),1444.56,false],['Netflix','Maandelijks, duurder geworden',167.88,true],['Autoverzekering','Maandelijks, '+eur.format(68.4),820.8,false],['Sportclub','Jaarlijks, volgende in januari',59.5,false],['Domein en hosting','Jaarlijks, volgende in mei',119,false]];
+  const tot=d.reduce((s,r)=>s+r[2],0);
+  $('prev').innerHTML=bonHTML({head:'Jaarbon',meta:'Voorbeeld met verzonnen gegevens',tilt:true,anim:true,interactive:false,
+    rows:d.map(r=>({name:r[0],sub:r[1],amount:eur.format(r[2]),mark:r[3]})),
+    foot:'<div class="tl big"><span>Totaal per jaar</span><b>'+eur.format(tot)+'</b></div>'+barcode()+'<div class="fine">Berekend op je eigen computer.</div>'});
+}
+
+async function readFile(f){
+  const buf=await f.arrayBuffer();
+  let t=new TextDecoder('utf-8').decode(buf);
+  if(t.includes('�'))t=new TextDecoder('windows-1252').decode(buf);
+  return t;
+}
+async function handleFiles(list){
+  const box=$('files');
+  for(const f of list){
+    const id=f.name+'|'+f.size;
+    if(SEEN.has(id)){box.insertAdjacentHTML('beforeend','<div class="err">'+esc(f.name)+': stond er al in, overgeslagen</div>');continue;}
+    SEEN.add(id);RAW.push({name:f.name,text:await readFile(f)});
+  }
+  rebuild();
+}
+function hideOut(){
+  document.body.classList.remove('has-data');
+  $('out').classList.add('hide');$('tabs').classList.add('hide');$('reset').classList.add('hide');
+}
+function rebuild(){
+  const r=parseFiles(RAW);ALL=r.tx;
+  $('files').innerHTML=r.info.map(i=>i.n?'<div>'+esc(i.name)+': '+i.n+' transacties ('+i.type+')</div>':'<div class="err">'+esc(i.name)+': geen transacties herkend. Controleer of dit een export van je bank is.</div>').join('');
+  if(!ALL.length){hideOut();return;}
+  FIRST=true;render();
+  try{window.scrollTo({top:$('out').offsetTop-60,behavior:'smooth'});}catch(e){}
+}
+function render(){
+  A=analyse(ALL,OV);
+  INS=insights(A.rec,A.use.filter(t=>t.amount<0&&!t.internal));
+  $('out').classList.remove('hide');$('tabs').classList.remove('hide');$('reset').classList.remove('hide');
+  document.body.classList.add('has-data');
+  drawBon();drawLead();drawIns();drawCats();drawChart();drawMatrix();drawCal();
+  FIRST=false;
+}
+function detHTML(r){
+  return '<label>Categorie <select class="recsel" data-key="'+esc(r.key)+'">'+ALLCATS.map(c=>'<option'+(c===r.cat?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select></label><button class="btn ghost sm lt" data-key="'+esc(r.key)+'">Opzegbrief</button>';
+}
+let SHOWALL=false;const BONMAX=12;
+function drawBon(){
+  const marks=new Set();
+  INS.forEach(i=>{if(i.type==='prijs')marks.add(i.name);if(i.type==='stream')i.names.forEach(n=>marks.add(n));});
+  const tot=sumPY(()=>true);
+  const lim=(SHOWALL||A.rec.length<=BONMAX)?A.rec.length:BONMAX,last=A.yms[A.yms.length-1];
+  $('bonbox').innerHTML=bonHTML({head:'Jaarbon',meta:mlabel(A.yms[0])+' tot '+mlabel(last)+', '+A.rec.length+' regels',nr:'JB-'+last,stamp:true,anim:FIRST,interactive:true,
+    rows:A.rec.slice(0,lim).map(r=>({key:r.key,name:r.name,sub:r.freq+', '+eur.format(r.perTime)+'. Volgende: '+nextLabel(r),amount:eur.format(r.perYear),mark:marks.has(r.name),off:CANCEL.has(r.key),det:detHTML(r)})),
+    foot:'<div class="tl big"><span>Totaal per jaar</span><b id="tTot">'+eur.format(tot)+'</b></div><div class="tl sav hide" id="tSav"><span>Weg ermee</span><b id="tSavV"></b></div><div class="tl hide" id="tNet"><span>Blijft over</span><b id="tNetV"></b></div>'+(A.rec.length>BONMAX?'<button class="more" id="bonmore">'+(SHOWALL?'Toon alleen de grootste '+BONMAX:'Toon alle '+A.rec.length+' vaste lasten')+'</button>':'')+barcode()+'<div class="fine">Berekend op je eigen computer. Er is niets verstuurd.</div>'});
+  updBon();
+}
+function updBon(){
+  const sav=A.rec.filter(r=>CANCEL.has(r.key)).reduce((s,r)=>s+r.perYear,0),tot=sumPY(()=>true);
+  $('tSav').classList.toggle('hide',!sav);$('tNet').classList.toggle('hide',!sav);
+  if(sav){$('tSavV').textContent='-'+eur.format(sav);$('tNetV').textContent=eur.format(tot-sav);}
+}
+function drawLead(){
+  const net=A.totInc-A.totExp,subs=sumPY(r=>r.cat==='Abonnementen'),tot=sumPY(()=>true);
+  const sp=A.matrix['Sparen & beleggen']?A.matrix['Sparen & beleggen'].total:0,spend=A.totExp-sp;
+  $('lead').innerHTML='Van <b>'+mlabel(A.yms[0])+'</b> tot <b>'+mlabel(A.yms[A.yms.length-1])+'</b> gaf je <b>'+eur0.format(spend)+'</b> uit'+(sp>=100?', ging er <b>'+eur0.format(sp)+'</b> naar sparen en beleggen':'')+' en kwam er <b>'+eur0.format(A.totInc)+'</b> binnen. Verschil: <b class="'+(net<0?'neg':'')+'">'+eur0.format(net)+'</b>.'+
+    (A.rec.length?' Je terugkerende kosten zijn <b>'+eur0.format(tot)+'</b> per jaar, daarvan is <b>'+eur0.format(subs)+'</b> abonnementen.':'');
+}
+function drawIns(){
+  const rows=[];
+  INS.filter(i=>i.type==='prijs').sort((a,b)=>b.perYear-a.perYear).slice(0,4).forEach(i=>rows.push(['warn','<b>'+esc(i.name)+'</b> is duurder geworden: van '+eur.format(i.from)+' naar '+eur.format(i.to)+'. Dat is '+eur.format(i.perYear)+' extra per jaar.']));
+  INS.filter(i=>i.type==='stream').forEach(i=>rows.push(['warn','Je betaalt voor <b>'+i.n+' streamingdiensten</b> ('+i.names.map(esc).join(', ')+'), samen '+eur0.format(i.perYear)+' per jaar. Gebruik je ze alle '+i.n+' echt?']));
+  INS.filter(i=>i.type==='dubbel').slice(0,3).forEach(i=>rows.push(['warn','Mogelijk <b>dubbel afgeschreven</b>: '+esc(i.name)+', '+eur.format(i.amount)+' op '+dlabel(i.date)+' ('+i.n+' keer). Controleer dit bij de partij.']));
+  INS.filter(i=>i.type==='klein').forEach(i=>rows.push(['info','<b>'+i.n+' klein abonnement'+(i.n>1?'en':'')+'</b> onder de 5 euro per maand ('+i.names.map(esc).join(', ')+'), samen '+eur.format(i.perYear)+' per jaar. Klein genoeg om te vergeten.']));
+  const T=TODAY(),y=A.rec.filter(r=>/jaarlijks/i.test(r.freq)).map(r=>({r,d:dueDates(r,T)[0]})).filter(x=>x.d).sort((a,b)=>a.d-b.d);
+  if(y.length)rows.push(['info','<b>'+y.length+' jaarlijkse kosten</b>, samen '+eur0.format(y.reduce((s,x)=>s+x.r.perYear,0))+' per jaar. De eerstvolgende is '+esc(y[0].r.name)+' op '+dlabel(y[0].d)+' ('+eur.format(y[0].r.perTime)+').']);
+  $('ins').innerHTML=rows.length?rows.map(r=>'<li class="'+r[0]+'">'+r[1]+'</li>').join(''):'<li class="info">Niets opvallends gevonden. Dat is ook goed nieuws.</li>';
+}
+function drawCats(){
+  const top=A.cats.slice(0,8),mx=Math.max(...top.map(c=>A.matrix[c].total),1);
+  $('cats').innerHTML=top.map(c=>'<div class="cb" data-cat="'+esc(c)+'"><span class="cn"><i class="dot" style="background:'+colorOf(c)+'"></i>'+esc(c)+'</span><span class="tr"><i style="width:'+(A.matrix[c].total/mx*100).toFixed(1)+'%"></i></span><span class="cv">'+eur0.format(A.matrix[c].total)+'</span></div>').join('');
+}
+function drawChart(){
+  const W=720,H=270,pb=28,pt=26,pl=58,n=A.yms.length,top=A.cats.slice(0,6);
+  const max=Math.max(...A.yms.map(y=>A.expBy[y]||0),1),bw=(W-pl)/n,bar=Math.min(bw*0.64,56),ch=H-pb-pt;
+  let s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Uitgaven per maand">';
+  [0.5,1].forEach(f=>{const yy=H-pb-ch*f;s+='<line x1="'+pl+'" x2="'+W+'" y1="'+yy+'" y2="'+yy+'" stroke="#C3CCD4" stroke-dasharray="3 4"/><text x="0" y="'+(yy+4)+'" font-size="11" fill="#51606C">'+eur0.format(max*f)+'</text>';});
+  s+='<line x1="'+pl+'" x2="'+W+'" y1="'+(H-pb)+'" y2="'+(H-pb)+'" stroke="#14232F" stroke-width="1.5"/>';
+  A.yms.forEach((y,i)=>{
+    const x=pl+i*bw+(bw-bar)/2;let yb=H-pb,sum=0;
+    s+='<g>';
+    top.forEach((c,ci)=>{const v=(A.matrix[c][y]||0);sum+=v;const h=v/max*ch;if(h>0){yb-=h;s+='<rect class="b" data-ym="'+y+'" x="'+x+'" y="'+yb+'" width="'+bar+'" height="'+h+'" fill="'+PAL[ci]+'"><title>'+mlabel(y)+': '+esc(c)+' '+eur0.format(v)+'</title></rect>';}});
+    const rest=(A.expBy[y]||0)-sum,hr=rest/max*ch;
+    if(hr>0){yb-=hr;s+='<rect class="b" data-ym="'+y+'" x="'+x+'" y="'+yb+'" width="'+bar+'" height="'+hr+'" fill="'+PAL[6]+'"/>';}
+    s+='<text x="'+(x+bar/2)+'" y="'+(yb-6)+'" font-size="11.5" font-weight="700" text-anchor="middle" fill="#14232F">'+Math.round(A.expBy[y]||0)+'</text>';
+    s+='<text x="'+(x+bar/2)+'" y="'+(H-9)+'" font-size="11.5" text-anchor="middle" fill="#51606C">'+mlabel(y)+'</text></g>';
+  });
+  $('chart').innerHTML=s+'</svg>';
+  $('legend').innerHTML=top.map((c,i)=>'<span><i class="dot" style="background:'+PAL[i]+'"></i>'+esc(c)+'</span>').join('')+'<span><i class="dot" style="background:'+PAL[6]+'"></i>Overige</span>';
+  $('chartcap').textContent='Klik op een maand voor de verdeling.';
+}
+function chartCaption(ym){
+  const parts=A.cats.map(c=>[c,A.matrix[c][ym]||0]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0]+' '+eur0.format(x[1]));
+  $('chartcap').innerHTML='<b>'+mlabel(ym)+':</b> '+eur0.format(A.expBy[ym]||0)+' uitgegeven. '+esc(parts.join(', '))+'.';
+}
+function drawMatrix(){
+  let h='<table class="mx"><thead><tr><th>Categorie</th>'+A.yms.map(y=>'<th>'+mlabel(y)+'</th>').join('')+'<th>Totaal</th><th>Gem. per maand</th></tr></thead><tbody>';
+  A.cats.forEach(c=>{
+    const row=A.matrix[c],mx=Math.max(...A.yms.map(y=>row[y]||0),1);
+    h+='<tr><td><span class="catlink" data-cat="'+esc(c)+'"><i class="dot" style="background:'+colorOf(c)+'"></i>'+esc(c)+'</span></td>';
+    A.yms.forEach(y=>{const v=row[y]||0;h+='<td class="cell" data-cat="'+esc(c)+'" data-ym="'+y+'" style="background:rgba(60,90,120,'+(v/mx*0.24).toFixed(3)+')">'+(v?eur0.format(v):'-')+'</td>';});
+    h+='<td><b>'+eur0.format(row.total)+'</b></td><td>'+eur0.format(row.total/A.yms.length)+'</td></tr>';
+  });
+  h+='<tr class="tot"><td>Totaal uitgaven</td>'+A.yms.map(y=>'<td>'+eur0.format(A.expBy[y]||0)+'</td>').join('')+'<td>'+eur0.format(A.totExp)+'</td><td>'+eur0.format(A.totExp/A.yms.length)+'</td></tr>';
+  h+='<tr><td>Inkomsten</td>'+A.yms.map(y=>'<td>'+eur0.format(A.incBy[y]||0)+'</td>').join('')+'<td>'+eur0.format(A.totInc)+'</td><td>'+eur0.format(A.totInc/A.yms.length)+'</td></tr>';
+  h+='<tr><td>Verschil</td>'+A.yms.map(y=>{const v=(A.incBy[y]||0)-(A.expBy[y]||0);return '<td class="'+(v>=0?'pos':'neg')+'">'+eur0.format(v)+'</td>';}).join('')+'<td><b>'+eur0.format(A.totInc-A.totExp)+'</b></td><td></td></tr></tbody></table>';
+  if(A.internalN||A.skipped)h+='<p class="note" style="margin-top:10px">'+(A.internalN?A.internalN+' overboekingen tussen je eigen rekeningen zijn weggelaten. ':'')+(A.skipped?'Maanden ouder dan 12 maanden zijn niet meegenomen.':'')+'</p>';
+  $('matrix').innerHTML=h;
+}
+function drawCal(){
+  const m=calendar(A.rec,TODAY()),mx=Math.max(...m.map(x=>x.total),1);
+  $('cal').innerHTML=m.map((x,i)=>'<div class="km"><div class="mh"><b>'+mlabel(x.ym)+(i===0?' (rest)':'')+'</b><span>'+eur0.format(x.total)+'</span></div><div class="kb"><i style="width:'+(x.total/mx*100).toFixed(1)+'%"></i></div>'+
+    (x.items.length?x.items.map(it=>'<span class="ch">'+esc(it.name)+' '+eur0.format(it.amount)+' op '+dshort(it.date)+'</span>').join(''):'<span class="none">Alleen vaste maandkosten</span>')+'</div>').join('');
+}
+function openModal(cat,ym){
+  const list=A.use.filter(t=>t.cat===cat&&t.amount<0&&!t.internal&&(!ym||t.ym===ym)).sort((a,b)=>b.date-a.date);
+  const sum=list.reduce((s,t)=>s-t.amount,0);
+  let h='<div class="rowx"><h2>'+esc(cat)+(ym?', '+mlabel(ym):'')+'</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">'+list.length+' afschrijvingen, totaal '+eur.format(sum)+'. Staat er een in de verkeerde categorie? Pas hem aan, het geldt voor alle betalingen aan die partij.</p><table><thead><tr><th>Datum</th><th>Naam</th><th>Bedrag</th><th>Categorie</th></tr></thead><tbody>';
+  list.slice(0,300).forEach(t=>{
+    h+='<tr><td>'+dlabel(t.date)+'</td><td style="text-align:left">'+esc(t.name||t.desc.slice(0,60))+'</td><td>'+eur.format(-t.amount)+'</td><td><select class="msel" data-key="'+esc(t.key)+'">'+ALLCATS.map(c=>'<option'+(c===t.cat?' selected':'')+'>'+esc(c)+'</option>').join('')+'</select></td></tr>';
+  });
+  $('mbox').innerHTML=h+'</tbody></table>'+(list.length>300?'<p class="note">Eerste 300 getoond.</p>':'');
+  $('modal').classList.add('on');$('modal').dataset.cat=cat;$('modal').dataset.ym=ym||'';
+}
+function openLetter(key){
+  const r=A.rec.find(x=>x.key===key);if(!r)return;
+  const per={'Maandelijks':'maand','Per kwartaal':'kwartaal','Halfjaarlijks':'half jaar'}[r.freq]||'jaar';
+  const t='Betreft: opzegging van mijn overeenkomst met '+r.name+'\n\nBeste klantenservice,\n\nHierbij zeg ik mijn abonnement of overeenkomst bij '+r.name+' op, met ingang van de eerst mogelijke datum. Het gaat om een afschrijving van '+eur.format(r.perTime)+' per '+per+'.\n\nKlantnummer of e-mailadres van het account: [vul hier in]\n\nWilt u de opzegging schriftelijk bevestigen, met vermelding van de einddatum?\n\nMet vriendelijke groet,\n[je naam]';
+  $('mbox').innerHTML='<div class="rowx"><h2>Opzegbrief</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">Pas aan en stuur door via de website of klantenservice van de partij.</p><textarea class="letter" id="ltxt" readonly>'+esc(t)+'</textarea><div style="margin-top:10px"><button class="btn" id="mcopy">Kopieer tekst</button></div>';
+  $('modal').classList.add('on');
+}
+function shareCanvas(withNames){
+  const rows=[];
+  if(withNames)A.rec.slice(0,9).forEach(r=>rows.push([r.name,r.perYear]));
+  else{const g={};A.rec.forEach(r=>{g[r.cat]=(g[r.cat]||0)+r.perYear;});Object.keys(g).sort((a,b)=>g[b]-g[a]).slice(0,9).forEach(c=>rows.push([c,g[c]]));}
+  const tot=sumPY(()=>true),sav=A.rec.filter(r=>CANCEL.has(r.key)).reduce((s,r)=>s+r.perYear,0);
+  const W=1080,top=90,px=150,pw=780,rowH=56;
+  const ph=200+rows.length*rowH+50+150+(sav>0?120:0)+110+60,H=top+ph+230;
+  const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  x.fillStyle='#E4E8EC';x.fillRect(0,0,W,H);
+  x.save();x.shadowColor='rgba(20,35,47,.30)';x.shadowBlur=44;x.shadowOffsetY=20;
+  x.fillStyle='#FFFEFA';x.beginPath();x.moveTo(px,top);x.lineTo(px+pw,top);x.lineTo(px+pw,top+ph);
+  for(let xx=px+pw;xx>px;xx-=28){x.lineTo(xx-14,top+ph+16);x.lineTo(xx-28,top+ph);}
+  x.closePath();x.fill();x.restore();
+  const M='ui-monospace,SFMono-Regular,Menlo,Consolas,monospace',ix=px+50,ex=px+pw-50;
+  x.fillStyle='#1b2a35';x.font='800 46px '+M;x.fillText('Jaarbon',ix,top+80);
+  x.fillStyle='#52616d';x.font='26px '+M;x.fillText(mlabel(A.yms[0])+' tot '+mlabel(A.yms[A.yms.length-1]),ix,top+120);
+  let y=top+190;
+  x.strokeStyle='#aab3ba';x.setLineDash([10,8]);x.lineWidth=2;x.beginPath();x.moveTo(ix,y-30);x.lineTo(ex,y-30);x.stroke();
+  x.setLineDash([]);
+  const dots=(xl,xr,yy)=>{x.fillStyle='#aeb3a8';for(let d=xl;d<xr;d+=10)x.fillRect(d,yy-6,3,3);};
+  rows.forEach(r=>{
+    let nm=r[0];x.font='28px '+M;x.fillStyle='#1b2a35';
+    while(x.measureText(nm).width>340&&nm.length>4)nm=nm.slice(0,-2);
+    if(nm!==r[0])nm=nm.trim()+'...';
+    const amt=eur.format(r[1]);x.font='700 28px '+M;const aw=x.measureText(amt).width;
+    x.font='28px '+M;const nw=x.measureText(nm).width;
+    x.fillText(nm,ix,y);dots(ix+nw+12,ex-aw-12,y);
+    x.font='700 28px '+M;x.fillText(amt,ex-aw,y);y+=rowH;
+  });
+  x.strokeStyle='#aab3ba';x.setLineDash([10,8]);x.beginPath();x.moveTo(ix,y-20);x.lineTo(ex,y-20);x.stroke();x.setLineDash([]);
+  y+=40;
+  const line=(label,val,big,col)=>{x.fillStyle=col||'#1b2a35';x.font=(big?'800 32px ':'26px ')+M;x.fillText(label,ix,y);const lw=x.measureText(label).width;let fs=big?66:34,w;do{x.font='800 '+fs+'px '+M;w=x.measureText(val).width;fs-=2;}while(lw+w+28>ex-ix&&fs>20);x.fillText(val,ex-w,y);y+=big?96:70;};
+  line('Totaal per jaar',eur.format(tot),true);
+  if(sav>0){line('Weg ermee','-'+eur.format(sav),false,'#C8323C');line('Blijft over',eur.format(tot-sav),false);}
+  let bx=ix,seed=11;x.fillStyle='#1b2a35';
+  while(bx<ex){seed=(seed*16807)%2147483647;const w=2+seed%5,g=2+(seed>>3)%5;x.fillRect(bx,y,w,70);bx+=w+g;}
+  y+=106;x.fillStyle='#52616d';x.font='22px '+M;
+  const f1='Lokaal berekend op mijn apparaat.';x.fillText(f1,ix+(ex-ix-x.measureText(f1).width)/2,y);
+  x.fillStyle='#14232F';x.font='700 30px system-ui,sans-serif';
+  const cap=CONFIG.SHARE_URL?'Maak je eigen jaarbon: '+CONFIG.SHARE_URL:'MijnGeld verstuurt mijn bankgegevens niet.';
+  x.fillText(cap,px,top+ph+120);
+  return c;
+}
+function toast(t){let e=$('toast');if(!e){e=document.createElement('div');e.id='toast';e.setAttribute('role','status');e.style.cssText='position:fixed;left:16px;right:16px;bottom:18px;max-width:460px;margin:0 auto;background:#14232F;color:#fff;padding:12px 16px;border-radius:12px;font:600 14px/1.4 system-ui,sans-serif;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.3)';document.body.appendChild(e);}
+  e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>{e.style.display='none';},7000);}
+const NOSAVE='Gebeurt er niets? Dan blokkeert dit venster downloads. Open het bestand in Safari of Chrome.';
+async function saveBlob(blob,name,type){
+  try{
+    const f=new File([blob],name,{type:type||blob.type});
+    if(/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)&&navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f]});return;}
+  }catch(e){if(e&&e.name==='AbortError')return;}
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();
+  toast('Bestand klaar: '+name+'. '+NOSAVE);
+}
+function openShare(withNames){
+  const c=shareCanvas(withNames);
+  $('mbox').innerHTML='<div class="rowx"><h2>Deel je bon</h2><button class="btn ghost sm" id="mclose">Sluiten</button></div><p class="note">Standaard staan er alleen categorieen op, geen namen van partijen en geen bankgegevens.</p><label class="chk"><input type="checkbox" id="swn"'+(withNames?' checked':'')+'> Toon namen van partijen</label><img alt="Deelbare jaarbon" src="'+c.toDataURL('image/png')+'"><div><button class="btn mark" id="mdl">Bewaar of deel afbeelding</button></div><p class="note">Lukt dat niet? Houd de afbeelding hierboven ingedrukt en kies bewaren.</p>';
+  $('modal').classList.add('on');
+  $('mdl').onclick=()=>c.toBlob(b=>saveBlob(b,'mijn-jaarbon.png','image/png'));
+}
+function exportCSV(){
+  const rows=[['Naam','Categorie','Frequentie','Per keer','Per jaar','Laatst betaald','Opzeggen']].concat(A.rec.map(r=>[r.name,r.cat,r.freq,r.perTime.toFixed(2).replace('.',','),r.perYear.toFixed(2).replace('.',','),dlabel(r.last),CANCEL.has(r.key)?'ja':'']));
+  const t='﻿'+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
+  saveBlob(new Blob([t],{type:'text/csv;charset=utf-8'}),'terugkerende-kosten.csv','text/csv');
+}
+function netState(){const e=$('net');if(!e)return;$('nettxt').textContent=navigator.onLine?'Lokale verwerking':'Offline en klaar voor gebruik';}
+
+const drop=$('drop'),inp=$('file');
+try{if(!/iPhone|iPad|iPod/i.test(navigator.userAgent)&&!(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1))$('iosnote').classList.add('hide');}catch(e){}
+drop.addEventListener('click',()=>inp.click());
+drop.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();inp.click();}});
+inp.addEventListener('change',()=>{handleFiles([...inp.files]);inp.value='';});
+['dragenter','dragover'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.add('over');}));
+['dragleave','drop'].forEach(e=>drop.addEventListener(e,ev=>{ev.preventDefault();drop.classList.remove('over');}));
+drop.addEventListener('drop',ev=>handleFiles([...ev.dataTransfer.files]));
+$('demo').addEventListener('click',()=>{RAW=[{name:'voorbeeld-ing.csv',text:demoCSV()}];SEEN=new Set();OV={};CANCEL=new Set();rebuild();});
+$('reset').addEventListener('click',()=>{RAW=[];SEEN=new Set();OV={};CANCEL=new Set();ALL=[];$('files').innerHTML='';hideOut();window.scrollTo(0,0);});
+$('ics').addEventListener('click',()=>{const t=makeICS(A.rec,TODAY(),CANCEL);saveBlob(new Blob([t],{type:'text/calendar;charset=utf-8'}),'herinneringen-vaste-lasten.ics','text/calendar');});
+$('exp').addEventListener('click',exportCSV);
+$('print').addEventListener('click',()=>{const w=SHOWALL;if(!w){SHOWALL=true;FIRST=false;drawBon();}try{window.print();}catch(e){}if(!w){SHOWALL=false;drawBon();}toast('Afdrukken opent niet? Dan blokkeert dit venster dat. Open het bestand in Safari of Chrome, of kies Download als CSV.');});
+$('share').addEventListener('click',()=>openShare(false));
+$('bonbox').addEventListener('click',e=>{
+  if(e.target.id==='bonmore'){SHOWALL=!SHOWALL;FIRST=false;drawBon();return;}
+  const lt=e.target.closest('.lt');if(lt){openLetter(lt.dataset.key);return;}
+  const nm=e.target.closest('button.nm');if(nm){const d=nm.closest('.bl').querySelector('.det');if(d)d.classList.toggle('hide');}
+});
+$('bonbox').addEventListener('change',e=>{
+  const k=e.target.dataset.key;
+  if(e.target.classList.contains('cx')){e.target.checked?CANCEL.add(k):CANCEL.delete(k);e.target.closest('.bl').classList.toggle('off',e.target.checked);updBon();}
+  else if(e.target.classList.contains('recsel')){OV[k]=e.target.value;render();}
+});
+$('matrix').addEventListener('click',e=>{const el=e.target.closest('[data-cat]');if(el)openModal(el.dataset.cat,el.dataset.ym||'');});
+$('cats').addEventListener('click',e=>{const el=e.target.closest('[data-cat]');if(el)openModal(el.dataset.cat,'');});
+$('chart').addEventListener('click',e=>{const el=e.target.closest('[data-ym]');if(el)chartCaption(el.dataset.ym);});
+$('modal').addEventListener('click',e=>{
+  if(e.target.id==='modal'||e.target.id==='mclose')$('modal').classList.remove('on');
+  if(e.target.id==='mcopy'){const t=$('ltxt');t.select();let ok=false;try{ok=document.execCommand('copy');}catch(x){}if(!ok&&navigator.clipboard)navigator.clipboard.writeText(t.value);e.target.textContent='Gekopieerd';}
+});
+$('modal').addEventListener('change',e=>{
+  if(e.target.classList.contains('msel')){const m=$('modal'),c=m.dataset.cat,y=m.dataset.ym;OV[e.target.dataset.key]=e.target.value;render();openModal(c,y);}
+  if(e.target.id==='swn')openShare(e.target.checked);
+});
+window.addEventListener('online',netState);window.addEventListener('offline',netState);netState();
+drawPreview();
+</script>
+<script>
+(function(){
+  const note=document.getElementById('iosnote');
+  const isiOS=/iPhone|iPad|iPod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  const standalone=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  async function prepareOffline(){
+    if(!('serviceWorker' in navigator))throw new Error('Service workers worden niet ondersteund');
+    await navigator.serviceWorker.register('./sw.js',{scope:'./',updateViaCache:'none'});
+    await navigator.serviceWorker.ready;
+    const cached=await caches.match('./index.html',{ignoreSearch:true});
+    if(!cached)throw new Error('Offline kopie ontbreekt');
+    window.__PWA_READY__=true;
+    document.documentElement.dataset.pwaReady='true';
+    if(note&&isiOS){
+      note.classList.remove('hide');
+      note.textContent=standalone
+        ?'MijnGeld staat op je beginscherm en is klaar voor offline gebruik.'
+        :'Installeer eenmalig: tik in Safari op Deel, kies Zet op beginscherm en zet Open als webapp aan.';
+    }
+  }
+  window.addEventListener('load',()=>prepareOffline().catch(err=>{
+    document.documentElement.dataset.pwaReady='false';
+    if(note){note.classList.remove('hide');note.textContent='Offline installatie is nog niet klaar. Open deze pagina met internet in Safari en probeer opnieuw.';}
+    console.error(err);
+  }));
+})();
+</script>
+</body>
+</html>
